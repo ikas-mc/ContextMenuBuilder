@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-2025-vs2026
     env:
       Solution_Name: src\ContextMenuBuilder.slnx
-      Appx_Package_Dir: src\Packages\
+      Appx_Package_Dir: ${{github.workspace}}\Packages\
 
     steps:
     - name: Checkout
