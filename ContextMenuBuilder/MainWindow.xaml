@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Window
+    x:Class="ContextMenuBuilder.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:ContextMenuBuilder"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:ContextMenuBuilder"
+    Title="{x:Bind r:AppContext.AppLang.AppTitle, Mode=OneWay}"
+    mc:Ignorable="d">
+
+    <Window.SystemBackdrop>
+        <MicaBackdrop />
+    </Window.SystemBackdrop>
+
+    <Grid>
+        <NavigationView
+            x:Name="RootNav"
+            BackRequested="RootNav_BackRequested"
+            IsBackButtonVisible="Visible"
+            IsBackEnabled="True"
+            IsPaneToggleButtonVisible="False"
+            OpenPaneLength="200"
+            PaneDisplayMode="Left"
+            SelectionChanged="OnNavigationViewSelectionChanged">
+
+            <NavigationView.MenuItems>
+                <NavigationViewItem
+                    Content="{x:Bind r:AppContext.AppLang.MainNavMenuManagement, Mode=OneWay}"
+                    Tag="menus" >
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF2C7;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem
+                    Content="{x:Bind r:AppContext.AppLang.MainNavWizard, Mode=OneWay}"
+                    Tag="wizard">
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE946;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem
+                    Content="{x:Bind r:AppContext.AppLang.MainNavCertificateManagement, Mode=OneWay}"
+                    Tag="certs" >
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEB95;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem
+                    Content="{x:Bind r:AppContext.AppLang.MainNavTemplateManagement, Mode=OneWay}"
+                    Tag="template" >
+                    <NavigationViewItem.Icon>
+                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF012;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+            <Frame x:Name="ContentFrame" />
+        </NavigationView>
+
+        <Image
+            Width="40"
+            Height="40"
+            Margin="40,4,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Source="/Assets/Square44x44Logo.png" />
+
+        <TextBlock
+            Margin="80,14,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top">
+            Menu Builder
+        </TextBlock>
+    </Grid>
+</Window>
