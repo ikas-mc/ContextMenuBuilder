@@ -63,13 +63,19 @@ jobs:
     - name: Remove the pfx
       run: Remove-Item -path GitHubActionsWorkflow.pfx
 
-    - name: Upload MSIX package
+    - name: Upload Deps
+      uses: actions/upload-artifact@v7
+      with:
+        name: ContextMenuBuilder-Deps-${{ matrix.platform }}
+        archive: true
+        path: |
+          ${{env.Appx_Package_Dir}}\*\Dependencies\${{ matrix.platform }}\*
+
+    - name: Upload Package
       uses: actions/upload-artifact@v7
       with:
         name: ContextMenuBuilder-${{ matrix.platform }}-${{ matrix.configuration }}
-        archive: false
+        archive: true
         path: |
-          ${{env.Appx_Package_Dir}}\*\*.msixbundle
           ${{env.Appx_Package_Dir}}\*\*.msix
           ${{env.Appx_Package_Dir}}\*\*.cer
-          ${{env.Appx_Package_Dir}}\*\Dependencies\${{ matrix.platform }}\*
