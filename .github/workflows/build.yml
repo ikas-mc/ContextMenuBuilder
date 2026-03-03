@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         configuration: [Release]
-        platform: [x64]
+        platform: [x64,arm64]
 
     runs-on: windows-2025-vs2026
     env:
