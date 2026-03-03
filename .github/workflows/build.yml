@@ -64,11 +64,11 @@ jobs:
       run: Remove-Item -path GitHubActionsWorkflow.pfx
 
     - name: Upload MSIX package
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: ContextMenuBuilder-${{ matrix.platform }}-${{ matrix.configuration }}
+        archive: false
         path: |
-          ${{env.Appx_Package_Dir}}\**\*.msixbundle
-          ${{env.Appx_Package_Dir}}\**\*.msix
-          ${{env.Appx_Package_Dir}}\**\*.cer
-          ${{env.Appx_Package_Dir}}\**\Dependencies\${{ matrix.platform }}\*
+          ${{env.Appx_Package_Dir}}\*.cer
+          ${{env.Appx_Package_Dir}}\*.msix
+          ${{env.Appx_Package_Dir}}\Dependencies\${{ matrix.platform }}\*
