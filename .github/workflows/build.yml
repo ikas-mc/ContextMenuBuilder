@@ -69,6 +69,7 @@ jobs:
         name: ContextMenuBuilder-${{ matrix.platform }}-${{ matrix.configuration }}
         archive: false
         path: |
-          ${{env.Appx_Package_Dir}}\*.cer
-          ${{env.Appx_Package_Dir}}\*.msix
-          ${{env.Appx_Package_Dir}}\Dependencies\${{ matrix.platform }}\*
+          ${{env.Appx_Package_Dir}}\*\*.msixbundle
+          ${{env.Appx_Package_Dir}}\*\*.msix
+          ${{env.Appx_Package_Dir}}\*\*.cer
+          ${{env.Appx_Package_Dir}}\*\Dependencies\${{ matrix.platform }}\*
