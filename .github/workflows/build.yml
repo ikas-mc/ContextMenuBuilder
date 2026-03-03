@@ -33,6 +33,13 @@ jobs:
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
+    - name: Update Version Build Number
+      working-directory: ${{github.workspace}}
+      run: |
+        $env:VERSION_BUILD_NUMBER = "${{github.run_number}}"
+        cd src
+        .\update-version.ps1
+
     - name: Restore the application
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
       env:
@@ -60,4 +67,8 @@ jobs:
       uses: actions/upload-artifact@v5
       with:
         name: ContextMenuBuilder-${{ matrix.platform }}-${{ matrix.configuration }}
-        path: ${{ env.Appx_Package_Dir }}
+        path: |
+          ${{env.Appx_Package_Dir}}\**\*.msixbundle
+          ${{env.Appx_Package_Dir}}\**\*.msix
+          ${{env.Appx_Package_Dir}}\**\*.cer
+          ${{env.Appx_Package_Dir}}\**\Dependencies\${{ matrix.platform }}\*
