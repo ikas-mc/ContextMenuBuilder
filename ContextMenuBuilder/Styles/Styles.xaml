@@ -8,13 +8,21 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="YukiListItemImageBorderBrush" Color="#55666666" />
-            <SolidColorBrush x:Key="YukiListItemBorderBrush" Color="#22bbbbbb" />
+            <SolidColorBrush
+                x:Key="YukiListItemImageBorderBrush"
+                Color="#55666666" />
+            <SolidColorBrush
+                x:Key="YukiListItemBorderBrush"
+                Color="#22bbbbbb" />
         </ResourceDictionary>
 
         <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="YukiListItemImageBorderBrush" Color="#55555555" />
-            <SolidColorBrush x:Key="YukiListItemBorderBrush" Color="#22000000" />
+            <SolidColorBrush
+                x:Key="YukiListItemImageBorderBrush"
+                Color="#55555555" />
+            <SolidColorBrush
+                x:Key="YukiListItemBorderBrush"
+                Color="#22000000" />
         </ResourceDictionary>
 
     </ResourceDictionary.ThemeDictionaries>
@@ -38,6 +46,8 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
     </Style>
 
-    <SolidColorBrush x:Key="SystemColorAccentBrush" Color="{ThemeResource SystemColorControlAccentColor}" />
+    <SolidColorBrush
+        x:Key="SystemColorAccentBrush"
+        Color="{ThemeResource SystemColorControlAccentColor}" />
 
 </ResourceDictionary>

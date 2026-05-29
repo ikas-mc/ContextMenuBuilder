@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using ContextMenuCustomApp.View.Common;
+using Microsoft.UI.Xaml.Controls;
 using System;
 
 namespace ContextMenuBuilder.Core.View.Common
@@ -15,11 +16,11 @@ namespace ContextMenuBuilder.Core.View.Common
             this._viewModel.Handler += OnEvent;
         }
 
-        public void OnEvent(string message, Exception e)
+        public void OnEvent(string message, Exception? e)
         {
             if (_weakReference.TryGetTarget(out var page))
             {
-                page.ShowMessage(message ?? e.Message, e == null ? MessageType.Success : MessageType.Error);
+                page.ShowMessage(message ?? e?.Message ?? string.Empty, e == null ? MessageType.Success : MessageType.Error);
             }
             else
             {
@@ -37,13 +38,13 @@ namespace ContextMenuBuilder.Core.View.Common
 
         public static void ShowMessage(this Page page, string message, MessageType messageType)
         {
-            if (page.Dispatcher.HasThreadAccess)
+            if (page.DispatcherQueue.HasThreadAccess)
             {
                 DoShowMessage(page, message, messageType);
             }
             else
             {
-                _ = page.Dispatcher.TryRunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                _ = page.DispatcherQueue.TryEnqueue(() =>
                 {
                     DoShowMessage(page, message, messageType);
                 });
@@ -58,7 +59,7 @@ namespace ContextMenuBuilder.Core.View.Common
             }
             else
             {
-                MessageHelper.UpdateMessage(true, messageType, message);
+                ShellContext.UpdateMessage(true, messageType, message);
             }
         }
     }

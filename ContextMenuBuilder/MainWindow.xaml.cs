@@ -1,20 +1,21 @@
+using ContextMenuBuilder.Core.View.Common;
 using Microsoft.UI;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Linq;
-using WinRT.Interop;
+using Windows.System.Threading;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 namespace ContextMenuBuilder
 {
-    public sealed partial class MainWindow : Window
+    public sealed partial class MainWindow : Window, IMessageSupport
     {
         public MainWindow()
         {
+            ShellContext.UpdateMessageSupport(this);
             InitializeComponent();
             SetupWindow();
             OnLoaded();
@@ -22,7 +23,7 @@ namespace ContextMenuBuilder
 
         private void SetupWindow()
         {
-            this.AppWindow.TitleBar.ButtonBackgroundColor= Colors.Transparent;
+            this.AppWindow.TitleBar.ButtonBackgroundColor = Colors.Transparent;
             this.AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
 
             //var hwnd = WindowNative.GetWindowHandle(this);
@@ -31,12 +32,15 @@ namespace ContextMenuBuilder
         }
         private void OnLoaded()
         {
-            if (RootNav.SelectedItem is null)
+            if (AppContext.AppSettings.EnableWizard)
             {
-                RootNav.SelectedItem = RootNav.MenuItems.FirstOrDefault();
+                AppContext.AppSettings.EnableWizard = false;
+                NavigateTo("wizard");
             }
-
-            NavigateTo((RootNav.SelectedItem as NavigationViewItem)?.Tag as string);
+            else
+            {
+                NavigateTo("menus");
+            }
         }
 
         private void OnNavigationViewSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -45,7 +49,8 @@ namespace ContextMenuBuilder
             {
                 NavigateTo("settings");
             }
-            else {
+            else
+            {
                 NavigateTo((args.SelectedItem as NavigationViewItem)?.Tag as string);
             }
         }
@@ -59,6 +64,7 @@ namespace ContextMenuBuilder
                 "menus" => typeof(MenuPackagesPage),
                 "template" => typeof(TemplatePage),
                 "settings" => typeof(SettingsPage),
+                "win11shell" => typeof(Win11ShellMenuPage),
                 _ => typeof(WizardPage)
             };
 
@@ -70,9 +76,9 @@ namespace ContextMenuBuilder
 
         private void RootNav_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
         {
-            if(ContentFrame.CanGoBack)
+            if (ContentFrame.CanGoBack)
             {
-                ContentFrame.GoBack();  
+                ContentFrame.GoBack();
             }
         }
 
@@ -104,6 +110,38 @@ namespace ContextMenuBuilder
             }
 
             return null;
+        }
+
+        public void UpdateMessage(bool show, MessageType messageType, string message = "")
+        {
+            switch (messageType)
+            {
+                case MessageType.Info:
+                    this.AppInfoBar.Severity = InfoBarSeverity.Informational;
+                    break;
+                case MessageType.Success:
+                    this.AppInfoBar.Severity = InfoBarSeverity.Success;
+                    break;
+                case MessageType.Warning:
+                    this.AppInfoBar.Severity = InfoBarSeverity.Warning;
+                    break;
+                case MessageType.Error:
+                    this.AppInfoBar.Severity = InfoBarSeverity.Error;
+                    break;
+            }
+            this.AppInfoBar.Message = show ? message : string.Empty;
+            this.AppInfoBar.IsOpen = show;
+
+            if (show)
+            {
+                ThreadPoolTimer.CreateTimer((timer) =>
+                {
+                    _ = this.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        this.AppInfoBar.IsOpen = false;
+                    });
+                }, TimeSpan.FromSeconds(MessageType.Error != messageType ? 1 : 5));
+            }
         }
     }
 }

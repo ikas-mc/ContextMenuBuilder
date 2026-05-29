@@ -6,7 +6,7 @@ namespace ContextMenuBuilder.Core.View.Common
 {
     public static class ContextMenuHelper
     {
-        public static void ShowAt(FlyoutBase flyout, FrameworkElement placementTarget)
+        public static void ShowAt(FlyoutBase flyout, UIElement placementTarget)
         {
             var option = new FlyoutShowOptions() { Placement = FlyoutPlacementMode.BottomEdgeAlignedLeft };
             flyout.ShowAt(placementTarget, option);

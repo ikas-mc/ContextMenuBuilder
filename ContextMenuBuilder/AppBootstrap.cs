@@ -1,5 +1,5 @@
-﻿using ContextMenuBuilder.Modules.Setting;
 using ContextMenuCustomApp;
+using ContextMenuCustomApp.Common;
 using System.IO;
 using Windows.Storage;
 
@@ -7,7 +7,7 @@ namespace ContextMenuBuilder
 {
     public class AppBootstrap
     {
-        public static void Run(AppSettings settings)
+        public static void Run(Settings settings)
         {
             if (settings.AppVersion <= 0)
             {

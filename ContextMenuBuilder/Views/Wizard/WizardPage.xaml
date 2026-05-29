@@ -9,7 +9,9 @@
     xmlns:r="using:ContextMenuBuilder"
     mc:Ignorable="d">
 
-    <Grid Padding="12" RowSpacing="8">
+    <Grid
+        Padding="12"
+        RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -18,13 +20,17 @@
         <controls:PageHeader Header="{x:Bind r:AppContext.AppLang.WizardTitle, Mode=OneWay}" />
 
         <ScrollViewer Grid.Row="1">
-            <StackPanel Padding="4" Spacing="12">
-                <TextBlock Text="{x:Bind r:AppContext.AppLang.WizardIntro, Mode=OneWay}" TextWrapping="Wrap" />
+            <StackPanel
+                Padding="4"
+                Spacing="12">
+                <TextBlock
+                    Text="{x:Bind r:AppContext.AppLang.WizardIntro, Mode=OneWay}"
+                    TextWrapping="Wrap" />
                 <HyperlinkButton
                     Padding="0"
                     HorizontalAlignment="Left"
                     Content="{x:Bind r:AppContext.AppLang.WizardHelpLinkText, Mode=OneWay}"
-                    NavigateUri="https://github.com/ikas-mc/ContextMenuBuilder/wiki/Help" />
+                    NavigateUri="https://github.com/ikas-mc/ContextMenuBuilder/wiki/Tutorial" />
 
                 <StackPanel Spacing="8">
 

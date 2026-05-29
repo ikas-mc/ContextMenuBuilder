@@ -1,0 +1,272 @@
+<Page
+    x:Class="ContextMenuBuilder.MenuPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cmcam="using:ContextMenuCustomApp.View.Menu"
+    xmlns:common="using:ContextMenuCustomApp.View.Common"
+    xmlns:controls="using:ContextMenuCustomApp.View.Controls"
+    xmlns:controls1="using:ContextMenuBuilder.Core.View.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:ContextMenuBuilder"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:menu="using:ContextMenuCustomApp.Service.Menu"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d">
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <controls1:PageHeader
+            x:Name="PageHeader"
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            ShowProgress="{x:Bind ViewModel.IsBusy, Mode=OneWay}" />
+
+        <CommandBar
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            DefaultLabelPosition="Right">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton
+                    Click="Add_Click"
+                    Icon="Add"
+                    Label="{x:Bind AppLang.MenuListAdd, Mode=OneWay}"
+                    ToolTipService.ToolTip="{x:Bind AppLang.MenuListAddTis}" />
+                <AppBarButton
+                    Click="Refresh_Click"
+                    Icon="Refresh"
+                    Label="{x:Bind AppLang.MenuListRefresh, Mode=OneWay}"
+                    ToolTipService.ToolTip="{x:Bind AppLang.MenuListRefreshTips}">
+
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <AppBarButton
+                    Click="Open_Folder_Click"
+                    Icon="OpenFile"
+                    Label="{x:Bind AppLang.MenuListOpenFolder, Mode=OneWay}"
+                    ToolTipService.ToolTip="{x:Bind AppLang.MenuListOpenFolderTips}" />
+
+
+                <AppBarSeparator />
+
+                <AppBarButton
+                    Click="OnBackupClicked"
+                    Label="{x:Bind AppLang.MenuPackageDetailBackupButton, Mode=OneWay}">
+                    <AppBarButton.Icon>
+                        <PathIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="F1 M 3 5.16 C 3 4.600001 3.193333 4.126667 3.58 3.74 C 3.966667 3.353333 4.440001 3.16 5 3.16 L 13.36 3.16 C 13.92 3.16 14.4 3.360001 14.799999 3.76 L 16.4 5.360001 C 16.799999 5.76 17 6.24 17 6.8 L 17 9.76 C 16.68 9.6 16.346668 9.466667 16 9.36 L 16 6.8 C 16 6.506668 15.906667 6.266667 15.719999 6.08 L 14.08 4.440001 C 13.893333 4.253334 13.653333 4.16 13.36 4.16 L 13 4.16 L 13 6.64 C 13 7.066668 12.853333 7.426667 12.559999 7.72 C 12.266666 8.013334 11.906667 8.16 11.48 8.16 L 7.52 8.16 C 7.093333 8.16 6.733334 8.013334 6.440001 7.72 C 6.146667 7.426667 6 7.066668 6 6.64 L 6 4.16 L 5 4.16 C 4.733335 4.16 4.500001 4.26 4.299999 4.46 C 4.1 4.660001 4 4.893334 4 5.16 L 4 15.16 C 4 15.426666 4.1 15.66 4.299999 15.860001 C 4.500001 16.059999 4.733335 16.16 5 16.16 L 5 11.64 C 5.000001 11.240001 5.146667 10.893333 5.440001 10.6 C 5.733334 10.306667 6.093334 10.16 6.52 10.16 L 11.32 10.16 C 10.92 10.453334 10.559999 10.786667 10.24 11.16 L 6.52 11.16 C 6.360001 11.16 6.233334 11.206667 6.139999 11.3 C 6.046667 11.393333 6 11.506667 6 11.64 L 6 16.16 L 9.2 16.16 C 9.306666 16.506666 9.44 16.84 9.599999 17.16 L 5 17.16 C 4.440001 17.16 3.966667 16.966667 3.58 16.58 C 3.193333 16.193333 3 15.72 3 15.16 Z M 7 4.16 L 7 6.64 C 7 6.800001 7.046667 6.926667 7.139999 7.02 C 7.233334 7.113334 7.346666 7.16 7.48 7.16 L 11.52 7.16 C 11.653334 7.16 11.766666 7.113334 11.86 7.02 C 11.953333 6.926667 12 6.813334 12 6.68 L 12 4.16 Z M 10 14.639999 C 10 15.466667 10.200001 16.226667 10.599999 16.92 C 11 17.613333 11.546667 18.16 12.24 18.559999 C 12.933333 18.959999 13.686666 19.16 14.5 19.16 C 15.313334 19.16 16.066666 18.959999 16.76 18.559999 C 17.453333 18.16 18 17.613333 18.4 16.92 C 18.799999 16.226667 19 15.473333 19 14.66 C 19 13.846666 18.799999 13.093334 18.4 12.4 C 18 11.706667 17.453333 11.16 16.76 10.76 C 16.066666 10.360001 15.313334 10.16 14.5 10.16 C 13.686666 10.16 12.933333 10.360001 12.24 10.76 C 11.546667 11.16 11 11.706667 10.599999 12.4 C 10.200001 13.093334 10 13.84 10 14.639999 Z M 16.52 11.64 C 16.653334 11.64 16.766666 11.693334 16.859999 11.8 C 16.953333 11.906667 17 12.026667 17 12.16 L 17 13.639999 C 17 13.8 16.953333 13.926667 16.859999 14.02 C 16.766666 14.113334 16.653334 14.16 16.52 14.16 L 15 14.16 C 14.866667 14.16 14.746666 14.113334 14.639999 14.02 C 14.533333 13.926667 14.486667 13.806667 14.5 13.66 C 14.513333 13.513333 14.566667 13.393333 14.66 13.3 C 14.753333 13.206667 14.866667 13.16 15 13.16 L 15.48 13.16 C 15.08 12.946667 14.66 12.873333 14.219999 12.940001 C 13.78 13.006666 13.4 13.186666 13.08 13.48 C 12.973333 13.586667 12.853333 13.64 12.719999 13.639999 C 12.586666 13.64 12.473333 13.586667 12.38 13.48 C 12.286667 13.373334 12.24 13.253334 12.24 13.12 C 12.24 12.986667 12.28 12.88 12.36 12.8 C 12.84 12.32 13.42 12.033333 14.099999 11.94 C 14.78 11.846666 15.413334 11.973333 16 12.32 L 16 12.16 C 16 12.026667 16.046667 11.906667 16.139999 11.8 C 16.233332 11.693334 16.359999 11.64 16.52 11.64 Z M 15.639999 17.200001 C 15.213333 17.360001 14.766666 17.426666 14.299999 17.4 C 13.833333 17.373333 13.4 17.24 13 17 L 13 17.16 C 13 17.293333 12.953333 17.406666 12.86 17.5 C 12.766666 17.593334 12.646667 17.639999 12.5 17.639999 C 12.353333 17.639999 12.233334 17.593334 12.139999 17.5 C 12.046667 17.406666 12 17.293333 12 17.16 L 12 15.639999 C 12 15.506667 12.046667 15.393333 12.139999 15.3 C 12.233334 15.206667 12.346666 15.16 12.48 15.16 L 14 15.16 C 14.133333 15.16 14.253333 15.206667 14.36 15.3 C 14.466666 15.393333 14.513333 15.513333 14.5 15.66 C 14.486667 15.806667 14.433333 15.926666 14.34 16.02 C 14.246667 16.113333 14.133333 16.16 14 16.16 L 13.52 16.16 C 13.92 16.373333 14.34 16.446667 14.78 16.379999 C 15.219999 16.313334 15.6 16.133333 15.92 15.84 C 16.026667 15.733334 16.146666 15.68 16.279999 15.68 C 16.413332 15.68 16.526667 15.733334 16.619999 15.84 C 16.713333 15.946667 16.76 16.066666 16.76 16.200001 C 16.76 16.333334 16.720001 16.440001 16.639999 16.52 C 16.346666 16.813334 16.013332 17.040001 15.639999 17.200001 Z " />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+
+
+                <AppBarButton
+                    Click="OnSyncClicked"
+                    Label="{x:Bind AppLang.MenuPackageDetailRestoreButton, Mode=OneWay}">
+                    <AppBarButton.Icon>
+                        <PathIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="F1 M 7.52 1.4 C 6.826666 1.4 6.233333 1.646667 5.74 2.139999 C 5.246666 2.633335 5 3.226667 5 3.92 L 5 6.68 C 5.4 6.546667 5.813333 6.466667 6.24 6.440001 L 6.24 3.92 C 6.239999 3.573334 6.366666 3.273335 6.62 3.02 C 6.873333 2.766666 7.16 2.639999 7.48 2.639999 L 11.24 2.639999 L 11.24 5.8 C 11.24 6.306667 11.426666 6.740001 11.8 7.1 C 12.173332 7.460001 12.613333 7.640001 13.12 7.64 L 16.24 7.64 L 16.24 16.4 C 16.24 16.746666 16.119999 17.040001 15.88 17.280001 C 15.639999 17.52 15.346665 17.639999 15 17.639999 L 12.16 17.639999 C 11.786666 18.119999 11.346666 18.546667 10.84 18.92 L 15 18.92 C 15.693332 18.92 16.279999 18.673332 16.76 18.18 C 17.24 17.686666 17.48 17.093334 17.48 16.4 L 17.48 6.92 C 17.48 6.413334 17.306665 5.973333 16.959999 5.6 L 13.32 1.960001 C 12.946665 1.586666 12.506665 1.4 12 1.4 Z M 16 6.400001 L 13.12 6.400001 C 12.959999 6.400002 12.82 6.340001 12.7 6.22 C 12.579999 6.1 12.506665 5.96 12.48 5.8 L 12.48 2.92 Z M 6.88 18.92 C 5.866666 18.92 4.926666 18.666666 4.06 18.16 C 3.193333 17.653334 2.506667 16.966667 2 16.1 C 1.493333 15.233334 1.24 14.293334 1.24 13.280001 C 1.24 12.266667 1.493333 11.326667 2 10.46 C 2.506667 9.593333 3.193333 8.906667 4.06 8.400001 C 4.926666 7.893334 5.866666 7.640001 6.88 7.64 C 7.893332 7.640001 8.833333 7.893334 9.7 8.400001 C 10.566667 8.906667 11.253333 9.593333 11.759999 10.46 C 12.266665 11.326667 12.519999 12.266667 12.52 13.280001 C 12.519999 14.293334 12.266665 15.233334 11.759999 16.1 C 11.253333 16.966667 10.566667 17.653334 9.7 18.16 C 8.833333 18.666666 7.893332 18.92 6.88 18.92 Z M 8.76 10.16 L 8.76 10.36 C 8.013332 9.933334 7.219999 9.773335 6.38 9.88 C 5.539999 9.986668 4.826666 10.346667 4.24 10.96 C 4.106667 11.066668 4.04 11.206667 4.04 11.38 C 4.04 11.553333 4.1 11.700001 4.22 11.82 C 4.34 11.940001 4.486667 12 4.66 12 C 4.833333 12 4.986667 11.946667 5.12 11.84 C 5.493333 11.440001 5.96 11.200001 6.52 11.12 C 7.08 11.040001 7.599999 11.133333 8.08 11.4 L 7.52 11.4 C 7.333333 11.4 7.18 11.46 7.06 11.58 C 6.94 11.700001 6.879999 11.846667 6.88 12.02 C 6.879999 12.193335 6.94 12.346667 7.06 12.48 C 7.18 12.613334 7.333333 12.68 7.52 12.68 L 9.36 12.68 C 9.546665 12.653334 9.699999 12.58 9.82 12.46 C 9.94 12.34 10 12.200001 10 12.04 L 10 10.16 C 10 10 9.94 9.853334 9.82 9.72 C 9.699999 9.586668 9.553332 9.52 9.38 9.52 C 9.206666 9.52 9.059999 9.586668 8.94 9.72 C 8.82 9.853334 8.76 10 8.76 10.16 Z M 6.8 16.719999 C 7.306666 16.720001 7.799999 16.626667 8.28 16.440001 C 8.759999 16.253334 9.173332 15.986667 9.52 15.639999 C 9.706667 15.453334 9.766666 15.246667 9.7 15.02 C 9.633332 14.793333 9.48 14.646667 9.24 14.58 C 9 14.513333 8.799999 14.573334 8.639999 14.76 C 8.24 15.133333 7.766666 15.360001 7.22 15.440001 C 6.673333 15.52 6.159999 15.426666 5.68 15.16 L 6.24 15.16 C 6.426666 15.16 6.58 15.1 6.7 14.98 C 6.82 14.860001 6.879999 14.713333 6.88 14.54 C 6.879999 14.366667 6.82 14.22 6.7 14.1 C 6.58 13.98 6.426666 13.92 6.24 13.92 L 4.36 13.92 C 4.2 13.92 4.059999 13.98 3.94 14.1 C 3.82 14.22 3.76 14.360001 3.76 14.52 L 3.76 16.4 C 3.76 16.586666 3.82 16.74 3.94 16.860001 C 4.059999 16.98 4.206666 17.040001 4.38 17.040001 C 4.553333 17.040001 4.7 16.98 4.82 16.860001 C 4.94 16.74 5 16.586666 5 16.4 L 5 16.200001 C 5.559999 16.546667 6.16 16.720001 6.8 16.719999 Z " />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
+                    x:Name="FolderText"
+                    Click="FolderText_Click"
+                    Label="{x:Bind AppLang.MenuPackageDetailOpenBackupFolderOpen, Mode=OneWay}">
+                    <AppBarButton.Icon>
+                        <PathIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Data="F1 M 4.52 3.16 C 3.826667 3.16 3.233333 3.406666 2.74 3.9 C 2.246667 4.393334 2 4.986668 2 5.68 L 2 14.639999 C 2 15.333334 2.246667 15.926666 2.74 16.42 C 3.233333 16.913334 3.826667 17.16 4.52 17.16 L 9.599999 17.16 C 9.439999 16.84 9.306665 16.506666 9.2 16.16 L 4.52 16.16 C 4.093333 16.16 3.733333 16.013332 3.44 15.719999 C 3.146667 15.426666 3 15.066667 3 14.639999 L 3 7.64 L 7.08 7.64 C 7.506666 7.666668 7.866666 7.52 8.16 7.2 L 9.599999 5.64 L 15.52 5.64 C 15.919998 5.64 16.266665 5.786667 16.559999 6.08 C 16.853333 6.373334 17 6.733334 17 7.16 L 17 9.76 C 17.346666 9.946667 17.68 10.16 18 10.4 L 18 7.16 C 18 6.466667 17.753332 5.88 17.26 5.400001 C 16.766666 4.920001 16.173332 4.666668 15.48 4.64 L 9.679999 4.64 L 8.08 3.440001 C 7.813333 3.253334 7.506666 3.16 7.16 3.16 Z M 3 5.64 C 3 5.240001 3.146667 4.893334 3.44 4.6 C 3.733333 4.306667 4.093333 4.16 4.52 4.16 L 7.16 4.16 C 7.266666 4.16 7.373333 4.186666 7.48 4.24 L 8.679999 5.16 L 7.44 6.52 C 7.333333 6.626667 7.213333 6.666668 7.08 6.64 L 3 6.64 Z M 14.52 19.16 C 13.693333 19.16 12.933332 18.959999 12.24 18.559999 C 11.546666 18.16 11 17.613333 10.599999 16.92 C 10.199999 16.226667 10 15.473333 10 14.66 C 10 13.846666 10.199999 13.093334 10.599999 12.4 C 11 11.706667 11.546666 11.16 12.24 10.76 C 12.933332 10.360001 13.686666 10.16 14.5 10.16 C 15.313332 10.16 16.066666 10.360001 16.76 10.76 C 17.453333 11.16 18 11.706667 18.4 12.4 C 18.799999 13.093334 19 13.846666 19 14.66 C 19 15.473333 18.799999 16.226667 18.4 16.92 C 18 17.613333 17.453333 18.16 16.76 18.559999 C 16.066666 18.959999 15.319999 19.16 14.52 19.16 Z M 16 12.16 L 16 12.32 C 15.546665 12.053333 15.066666 11.92 14.559999 11.92 C 13.706666 11.893333 12.973332 12.186666 12.36 12.8 C 12.279999 12.88 12.239999 12.993334 12.24 13.139999 C 12.239999 13.286667 12.286666 13.406667 12.38 13.5 C 12.473332 13.593333 12.586665 13.64 12.719999 13.639999 C 12.853333 13.64 12.973333 13.586667 13.08 13.48 C 13.4 13.186666 13.779999 13.006666 14.219999 12.940001 C 14.659999 12.873333 15.079999 12.946667 15.48 13.16 L 15 13.16 C 14.866666 13.16 14.746666 13.206667 14.639999 13.3 C 14.533333 13.393333 14.486666 13.513333 14.5 13.66 C 14.513332 13.806667 14.566666 13.926667 14.66 14.02 C 14.753332 14.113334 14.866666 14.16 15 14.16 L 16.52 14.16 C 16.653332 14.16 16.766666 14.113334 16.859999 14.02 C 16.953333 13.926667 17 13.813334 17 13.68 L 17 12.16 C 17 12.026667 16.953333 11.906667 16.859999 11.8 C 16.766666 11.693334 16.646666 11.64 16.5 11.64 C 16.353333 11.64 16.233332 11.693334 16.139999 11.8 C 16.046665 11.906667 16 12.026667 16 12.16 Z M 14.44 17.4 C 15.293332 17.426666 16.026665 17.133333 16.639999 16.52 C 16.719999 16.440001 16.76 16.326668 16.76 16.18 C 16.76 16.033333 16.713333 15.913334 16.619999 15.82 C 16.526665 15.726667 16.413332 15.68 16.279999 15.68 C 16.146666 15.68 16.026667 15.733334 15.92 15.84 C 15.599998 16.133333 15.219999 16.313334 14.78 16.379999 C 14.34 16.446667 13.92 16.373333 13.52 16.16 L 14 16.16 C 14.133333 16.16 14.253333 16.113333 14.36 16.02 C 14.466666 15.926666 14.513332 15.806667 14.5 15.66 C 14.486666 15.513333 14.433332 15.393333 14.34 15.3 C 14.246666 15.206667 14.133333 15.16 14 15.16 L 12.52 15.16 C 12.359999 15.16 12.233332 15.206667 12.139999 15.3 C 12.046666 15.393333 12 15.506667 12 15.639999 L 12 17.16 C 12 17.293333 12.046666 17.406666 12.139999 17.5 C 12.233332 17.593334 12.353333 17.639999 12.5 17.639999 C 12.646666 17.639999 12.766665 17.593334 12.86 17.5 C 12.953333 17.406666 13 17.293333 13 17.16 L 13 17 C 13.453333 17.266666 13.933332 17.4 14.44 17.4 Z " />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+
+                <AppBarSeparator />
+                <AppBarButton
+                    Click="OnOpenClicked"
+                    Icon="OpenWith"
+                    Label="{x:Bind AppLang.MenuPackageDetailOpenEditorButton, Mode=OneWay}" />
+
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+
+        <ListView
+            x:Name="CommandList"
+            Grid.Row="2"
+            Grid.Column="0"
+            AllowDrop="False"
+            BorderBrush="{ThemeResource NavContentBorderColor}"
+            BorderThickness="0,0,1,0"
+            CanDragItems="False"
+            CanReorderItems="False"
+            ItemsSource="{x:Bind ViewModel.MenuItems, Mode=OneWay}"
+            SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="menu:MenuItem">
+                    <Grid ColumnSpacing="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="28" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="24" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image
+                            Grid.Column="0"
+                            Width="24"
+                            Height="24"
+                            local:MenuItemIconLoader.Source="{x:Bind Icon, Mode=OneWay}"
+                            Stretch="Uniform" />
+
+                        <TextBlock
+                            Grid.Column="1"
+                            Text="{x:Bind Title, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"
+                            ToolTipService.ToolTip="{x:Bind Title, Mode=OneWay}" />
+
+                        <FontIcon
+                            Grid.Column="2"
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF140;"
+                            Visibility="{x:Bind Enabled, Mode=OneWay, Converter={StaticResource EqualsVisibilityConverter}, ConverterParameter=False}" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Grid
+            Grid.Row="2"
+            Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="48" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0"
+                Margin="4,-8,0,0"
+                FontSize="28"
+                Text="Menu"
+                Visibility="Collapsed" />
+
+            <cmcam:MenuEditorControl
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="0"
+                Padding="4,4,16,4"
+                MenuItem="{x:Bind (menu:MenuItem)CommandList.SelectedItem, Mode=OneWay}"
+                Visibility="{x:Bind CommandList.SelectedItem, Mode=OneWay, Converter={StaticResource VisibilityConverter}}" />
+
+            <Grid
+                Grid.Row="1"
+                Grid.Column="2"
+                Padding="0"
+                HorizontalAlignment="Center"
+                Visibility="{x:Bind CommandList.SelectedItem, Mode=OneWay, Converter={StaticResource VisibilityConverter}, ConverterParameter=!}">
+                <Button
+                    HorizontalAlignment="Center"
+                    Background="Transparent"
+                    Click="Add_Click"
+                    Content="{x:Bind AppLang.MenuListAdd}" />
+            </Grid>
+
+            <CommandBar
+                Grid.Row="2"
+                DefaultLabelPosition="Right">
+                <CommandBar.PrimaryCommands>
+                    <AppBarButton
+                        Click="OpenHelp_Click"
+                        Icon="Globe"
+                        Label="{x:Bind AppLang.MenuCommandHelp}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandHelpTips}" />
+
+                    <AppBarSeparator />
+
+                    <AppBarButton
+                        Click="CopyToClipboard_Click"
+                        Icon="Copy"
+                        Label="{x:Bind AppLang.MenuCommandClipboardCopy}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandClipboardCopyTips}" />
+
+                    <AppBarButton
+                        Click="CopyFromClipboard_Click"
+                        Icon="Paste"
+                        Label="{x:Bind AppLang.MenuCommandClipboardPaste}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandClipboardPasteTips}" />
+                    <AppBarSeparator />
+
+                    <AppBarButton
+                        Click="Open_Click"
+                        Icon="OpenFile"
+                        Label="{x:Bind AppLang.MenuCommandOpen}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandOpenTips}" />
+
+                    <AppBarButton
+                        Click="Rename_Click"
+                        Icon="Rename"
+                        Label="{x:Bind AppLang.MenuCommandRename}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandRenameTips}" />
+
+                    <AppBarButton
+                        Click="Enable_Click"
+                        Label="{x:Bind AppLang.MenuCommandToggleEnabled}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandToggleEnabledTips}">
+                        <AppBarButton.Icon>
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE733;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+
+                    <AppBarButton
+                        Click="Delete_Click"
+                        Icon="Delete"
+                        Label="{x:Bind AppLang.MenuCommandDelete}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandDeleteTips}">
+                        <Button.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="Delete" />
+                        </Button.KeyboardAccelerators>
+                    </AppBarButton>
+
+                    <AppBarButton
+                        Click="Save_Click"
+                        Icon="Save"
+                        Label="{x:Bind AppLang.MenuCommandSave}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandSaveTips}">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator
+                                Key="S"
+                                Modifiers="Control" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+
+                    <AppBarButton
+                        Click="Refresh_Menu_Click"
+                        Icon="Refresh"
+                        Label="{x:Bind AppLang.MenuCommandRefresh}"
+                        ToolTipService.ToolTip="{x:Bind AppLang.MenuCommandRefreshTips}" />
+                </CommandBar.PrimaryCommands>
+            </CommandBar>
+        </Grid>
+    </Grid>
+</Page>

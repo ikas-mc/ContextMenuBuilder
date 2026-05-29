@@ -7,7 +7,6 @@
     xmlns:local="using:ContextMenuBuilder"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:r="using:ContextMenuBuilder"
-    Title="{x:Bind r:AppContext.AppLang.AppTitle, Mode=OneWay}"
     mc:Ignorable="d">
 
     <Window.SystemBackdrop>
@@ -26,13 +25,49 @@
             SelectionChanged="OnNavigationViewSelectionChanged">
 
             <NavigationView.MenuItems>
+                <NavigationViewItemHeader Content="{x:Bind r:AppContext.AppLang.NvaHeaderMenu, Mode=OneWay}" />
                 <NavigationViewItem
                     Content="{x:Bind r:AppContext.AppLang.MainNavMenuManagement, Mode=OneWay}"
-                    Tag="menus" >
+                    Tag="menus">
                     <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF2C7;" />
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF2C7;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+
+                <NavigationViewItem
+                    Content="{x:Bind r:AppContext.AppLang.MainNavCertificateManagement, Mode=OneWay}"
+                    Tag="certs">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xEB95;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem
+                    Content="{x:Bind r:AppContext.AppLang.MainNavTemplateManagement, Mode=OneWay}"
+                    Tag="template">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF012;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
+                <NavigationViewItemHeader
+                    Content="{x:Bind r:AppContext.AppLang.NvaHeaderTool, Mode=OneWay}"
+                    FontFamily="Segoe Fluent Icons" />
+                <NavigationViewItem
+                    Content="{x:Bind r:AppContext.AppLang.Win11ShellMenuNavLabel, Mode=OneWay}"
+                    Tag="win11shell">
+                    <NavigationViewItem.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xEDE3;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+
             </NavigationView.MenuItems>
 
             <NavigationView.FooterMenuItems>
@@ -40,23 +75,12 @@
                     Content="{x:Bind r:AppContext.AppLang.MainNavWizard, Mode=OneWay}"
                     Tag="wizard">
                     <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE946;" />
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE946;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem
-                    Content="{x:Bind r:AppContext.AppLang.MainNavCertificateManagement, Mode=OneWay}"
-                    Tag="certs" >
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEB95;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem
-                    Content="{x:Bind r:AppContext.AppLang.MainNavTemplateManagement, Mode=OneWay}"
-                    Tag="template" >
-                    <NavigationViewItem.Icon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF012;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+
             </NavigationView.FooterMenuItems>
             <Frame x:Name="ContentFrame" />
         </NavigationView>
@@ -75,5 +99,13 @@
             VerticalAlignment="Top">
             Menu Builder
         </TextBlock>
+
+        <InfoBar
+            x:Name="AppInfoBar"
+            Margin="0,32,8,0"
+            HorizontalAlignment="Right"
+            IsOpen="False"
+            Message=""
+            Severity="Warning" />
     </Grid>
 </Window>

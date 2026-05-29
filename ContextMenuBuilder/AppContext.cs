@@ -1,6 +1,6 @@
 
 using ContextMenuBuilder.Modules.Lang;
-using ContextMenuBuilder.Modules.Setting;
+using ContextMenuCustomApp.Common;
 using Microsoft.UI.Xaml;
 using System.Threading.Tasks;
 
@@ -16,7 +16,7 @@ namespace ContextMenuBuilder
 
         public static AppLang AppLang { get; private set; } = new AppLang();
 
-        public static AppSettings AppSettings { get; private set; } = new AppSettings();
+        public static Settings AppSettings { get; private set; } = new Settings();
 
         private static Task? _langTask;
 

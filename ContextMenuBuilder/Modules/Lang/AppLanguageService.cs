@@ -1,22 +1,15 @@
+using ContextMenuCustomApp.Common;
+using ContextMenuCustomApp.Service.Common.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Windows.Globalization;
 using Windows.Storage;
 
 namespace ContextMenuBuilder.Modules.Lang
 {
-
-    [JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true,WriteIndented =true)]
-    [JsonSerializable(typeof(AppLang))]
-    internal partial class AppLangJsonContext : JsonSerializerContext
-    {
-    }
 
     public class AppLanguageService
     {
@@ -55,8 +48,7 @@ namespace ContextMenuBuilder.Modules.Lang
             {
                 var langFile = await GetCustomLanguageFileAsync(langFileName);
                 var langContent = await FileIO.ReadTextAsync(langFile);
-
-                return JsonSerializer.Deserialize(langContent, AppLangJsonContext.Default.AppLang) ?? throw new Exception($"Deserialize {langFileName} error");
+                return JsonUtil.Deserialize<AppLang>(langContent);
             });
         }
 
@@ -128,7 +120,7 @@ namespace ContextMenuBuilder.Modules.Lang
             var langContent = await FileIO.ReadTextAsync(file);
             try
             {
-                JsonSerializer.Deserialize(langContent, AppLangJsonContext.Default.AppLang);
+                JsonUtil.Deserialize<AppLang>(langContent);
             }
             catch (Exception e)
             {
@@ -149,13 +141,6 @@ namespace ContextMenuBuilder.Modules.Lang
             await file.CopyAsync(langsFolder, fileName, NameCollisionOption.ReplaceExisting);
         }
 
-        private static readonly AppLangJsonContext s_langJsonContext =
-        new(new JsonSerializerOptions(AppLangJsonContext.Default.Options)
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            WriteIndented = true
-        });
-
         public static async Task ExportLanguageToFileAsync(Func<string, Task<StorageFile?>> fileFunc)
         {
             var fileName = AppContext.AppSettings.CurrentLanguage;
@@ -174,13 +159,8 @@ namespace ContextMenuBuilder.Modules.Lang
 
             AppLang applang = await LoadAsync();
 
-            var options = new JsonSerializerOptions(AppLangJsonContext.Default.Options)
-            {
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // 不转义中文
-                WriteIndented = true
-            };
-
-            await FileIO.WriteTextAsync(file, JsonSerializer.Serialize(applang, s_langJsonContext.AppLang));
+            var json = JsonUtil.Serialize(applang);
+            await FileIO.WriteTextAsync(file, json);
         }
 
         public static void UpdateLangSetting(LangInfo langInfo)

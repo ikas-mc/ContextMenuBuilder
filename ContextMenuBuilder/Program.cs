@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-
-using System.Threading;
 using Microsoft.UI.Dispatching;
 using Microsoft.Windows.AppLifecycle;
+using System;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ContextMenuBuilder
 {

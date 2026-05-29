@@ -67,7 +67,7 @@ namespace ContextMenuBuilder.Modules.File
             }
         }
 
-        private static bool TryAttachWindow(object picker)
+        public static bool TryAttachWindow(object picker)
         {
             if (App.MainWindow is null)
             {
