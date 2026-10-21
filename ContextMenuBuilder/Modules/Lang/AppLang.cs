@@ -105,6 +105,23 @@ namespace ContextMenuCustomApp.Common
         public string MenuPackageDetailStatusSaved { get; set; } = "Saved.";
         public string MenuPackageDetailStatusSaveFailed { get; set; } = "Save failed: {0}";
 
+        public string CommonClose { get; set; } = "Close";
+        public string MenuPackageSettingsButton { get; set; } = "Settings";
+        public string MenuPackageSettingsButtonTips { get; set; } = "Configure menu name and icons of this package";
+        public string MenuPackageSettingsTitle { get; set; } = "Package settings";
+        public string MenuPackageSettingsMenuNameHeader { get; set; } = "Context menu name";
+        public string MenuPackageSettingsMenuNamePlaceholder { get; set; } = "Open With";
+        public string MenuPackageSettingsMenuNameDescription { get; set; } = "Title shown in the Explorer context menu";
+        public string MenuPackageSettingsIconHeader { get; set; } = "Menu icon";
+        public string MenuPackageSettingsIconTip { get; set; } = "Icon path, e.g. \"C:\\icons\\menu.png\" or \"C:\\app\\app.exe\",0. Leave empty to use the built-in icon.";
+        public string MenuPackageSettingsLightIconHeader { get; set; } = "Light theme icon";
+        public string MenuPackageSettingsDarkIconHeader { get; set; } = "Dark theme icon";
+        public string MenuPackageSettingsBrowseButton { get; set; } = "Browse";
+        public string MenuPackageSettingsClearButton { get; set; } = "Clear";
+        public string MenuPackageSettingsSaveSuccess { get; set; } = "Package settings saved. Restart Explorer to apply.";
+        public string MenuPackageSettingsSaveFailed { get; set; } = "Failed to save package settings: {0}";
+        public string MenuPackageSettingsStatusPackageNotReady { get; set; } = "Package information is not ready.";
+
         public string TemplateTitle { get; set; } = "Template";
         public string TemplateInfoTabTitle { get; set; } = "Template info";
         public string TemplateImportTabTitle { get; set; } = "Import template";

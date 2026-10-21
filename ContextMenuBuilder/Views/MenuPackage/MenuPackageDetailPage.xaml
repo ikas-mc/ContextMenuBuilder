@@ -16,7 +16,9 @@
         </ItemsPanelTemplate>
 
     </Page.Resources>
-    <Grid Padding="12" RowSpacing="8">
+    <Grid
+        Padding="12"
+        RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -33,19 +35,28 @@
             Grid.Row="1"
             Orientation="Horizontal"
             Spacing="8">
-            <Button Click="OnRefreshClicked" Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailRefreshButton, Mode=OneWay}" />
-            <Button Click="OnNewClicked" Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailNewButton, Mode=OneWay}" />
-            <Button Click="OnDeleteClicked" Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailDeleteButton, Mode=OneWay}" />
-            <Button Click="OnOpenClicked" Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailOpenEditorButton, Mode=OneWay}" />
+            <Button
+                Click="OnRefreshClicked"
+                Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailRefreshButton, Mode=OneWay}" />
+            <Button
+                Click="OnNewClicked"
+                Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailNewButton, Mode=OneWay}" />
+            <Button
+                Click="OnDeleteClicked"
+                Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailDeleteButton, Mode=OneWay}" />
+            <Button
+                Click="OnOpenClicked"
+                Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailOpenEditorButton, Mode=OneWay}" />
             <Button
                 Margin="16,0,0,0"
                 Click="OnBackupClicked"
                 Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailBackupButton, Mode=OneWay}" />
-            <Button Click="OnSyncClicked" Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailRestoreButton, Mode=OneWay}" />
             <Button
-                Click="FolderText_Click"
+                Click="OnSyncClicked"
+                Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailRestoreButton, Mode=OneWay}" />
+            <Button
                 x:Name="FolderText"
-                 />
+                Click="FolderText_Click" />
         </StackPanel>
 
         <Grid
@@ -85,14 +96,18 @@
                 Grid.Row="1"
                 Grid.Column="1"
                 Spacing="8">
-                <TextBox x:Name="MenuFileNameBox" PlaceholderText="{x:Bind r:AppContext.AppLang.MenuPackageDetailFileNamePlaceholder, Mode=OneWay}" />
+                <TextBox
+                    x:Name="MenuFileNameBox"
+                    PlaceholderText="{x:Bind r:AppContext.AppLang.MenuPackageDetailFileNamePlaceholder, Mode=OneWay}" />
                 <TextBox
                     x:Name="ContentBox"
                     Height="320"
                     AcceptsReturn="True"
                     PlaceholderText="{x:Bind r:AppContext.AppLang.MenuPackageDetailContentPlaceholder, Mode=OneWay}"
                     TextWrapping="Wrap" />
-                <Button Click="OnSaveClicked" Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailSaveButton, Mode=OneWay}" />
+                <Button
+                    Click="OnSaveClicked"
+                    Content="{x:Bind r:AppContext.AppLang.MenuPackageDetailSaveButton, Mode=OneWay}" />
             </StackPanel>
         </Grid>
         <TextBlock

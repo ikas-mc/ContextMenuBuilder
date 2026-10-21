@@ -22,13 +22,25 @@ namespace ContextMenuBuilder
         private string? _backupFolderPath;
         private string? _menusFolderPath;
         private MenuPackageView? _package;
-        public AppLang AppLang { get; private set; }
-        public Settings AppSetting { get; private set; }
+        public AppLang AppLang
+        {
+            get; private set;
+        }
+        public Settings AppSetting
+        {
+            get; private set;
+        }
 
         public MenuPageViewModel ViewModel
         {
-            get { return (MenuPageViewModel)GetValue(ViewModelProperty); }
-            private set { SetValue(ViewModelProperty, value); }
+            get
+            {
+                return (MenuPageViewModel)GetValue(ViewModelProperty);
+            }
+            private set
+            {
+                SetValue(ViewModelProperty, value);
+            }
         }
 
         public static readonly DependencyProperty ViewModelProperty =
@@ -157,7 +169,7 @@ namespace ContextMenuBuilder
                 }
 
                 var dialog = new MenuFileRenameDialog(menuItem);
-                (bool result, string name) = await dialog.ShowAsync();
+                (bool result, string name) = await dialog.ShowAsync(this.XamlRoot);
                 if (result)
                 {
                     await ViewModel.RenameMenuFile(menuItem, name);
@@ -323,6 +335,45 @@ namespace ContextMenuBuilder
             {
                 this.ShowMessage(string.Format(AppContext.AppLang.MenuPackageDetailStatusBackupFailed, ex.Message), MessageType.Info);
             }
+        }
+
+        private async void OnPackageSettingsClicked(object sender, RoutedEventArgs e)
+        {
+            await ShowPackageSettingsAsync();
+        }
+
+        private async Task ShowPackageSettingsAsync()
+        {
+            if (_package?.IdFamilyName is not string familyName)
+            {
+                this.ShowMessage(AppContext.AppLang.MenuPackageSettingsStatusPackageNotReady, MessageType.Warning);
+                return;
+            }
+
+            MenuPackageSettings settings;
+            try
+            {
+                settings = new MenuPackageSettings(familyName);
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessage(string.Format(AppContext.AppLang.MenuPackageSettingsSaveFailed, ex.Message), MessageType.Warning);
+                return;
+            }
+
+            var control = MenuPackageSettingsControl.Create(settings);
+            var dialog = new ContentDialog
+            {
+                Title = AppContext.AppLang.MenuPackageSettingsTitle,
+                Content = control,
+                CloseButtonText = AppContext.AppLang.CommonClose,
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = XamlRoot,
+            };
+            dialog.Resources["ContentDialogMaxWidth"] = 800;
+            dialog.Resources["ContentDialogPadding"] = new Thickness(12);
+
+            await dialog.ShowAsync();
         }
 
         private async void OnOpenClicked(object sender, RoutedEventArgs e)

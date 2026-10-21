@@ -100,6 +100,16 @@
 
                 <AppBarSeparator />
                 <AppBarButton
+                    Click="OnPackageSettingsClicked"
+                    Label="{x:Bind AppLang.MenuPackageSettingsButton, Mode=OneWay}"
+                    ToolTipService.ToolTip="{x:Bind AppLang.MenuPackageSettingsButtonTips}">
+                    <AppBarButton.Icon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE713;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
                     Click="OnOpenClicked"
                     Icon="OpenWith"
                     Label="{x:Bind AppLang.MenuPackageDetailOpenEditorButton, Mode=OneWay}" />
