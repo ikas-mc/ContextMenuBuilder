@@ -1,4 +1,4 @@
-namespace ContextMenuCustomApp.Common
+﻿namespace ContextMenuCustomApp.Common
 {
     public partial class AppLang
     {
@@ -28,6 +28,7 @@ namespace ContextMenuCustomApp.Common
         public string MenuPackagesTitle { get; set; } = "Menu Packages";
         public string MenuPackagePrefixPlaceholder { get; set; } = "Package prefix, e.g. CMC.";
         public string MenuPackageQueryButton { get; set; } = "Query";
+        public string MenuPackageRefreshButton { get; set; } = "Refresh";
         public string MenuPackageAddButton { get; set; } = "Add";
         public string MenuPackageUpgradeButton { get; set; } = "Upgrade";
         public string MenuPackageUninstallButton { get; set; } = "Uninstall";
@@ -35,19 +36,18 @@ namespace ContextMenuCustomApp.Common
         public string MenuPackageOpenMenusButton { get; set; } = "Menus";
         public string MenuPackageStatusEnterPrefix { get; set; } = "Please enter a package prefix";
         public string MenuPackageStatusQueryFailed { get; set; } = "Failed to load packages: {0}";
-        public string MenuPackageStatusSelected { get; set; } = "Selected: {0}";
         public string MenuPackageStatusSelectUpgrade { get; set; } = "Select a package to upgrade";
         public string MenuPackageStatusSelectUninstall { get; set; } = "Select a package to uninstall";
         public string MenuPackageStatusUninstalling { get; set; } = "Uninstalling...";
         public string MenuPackageStatusUninstallFinished { get; set; } = "Uninstall completed";
-        public string MenuPackageStatusUninstallFailed { get; set; } = "Failed to uninstall: {0}";
         public string MenuPackageStatusSelectOpen { get; set; } = "Select a package to open";
-        public string MenuPackageStatusOpened { get; set; } = "Opened";
         public string MenuPackageStatusOpenFailed { get; set; } = "Failed to launch: {0}";
 
         public string MenuPackageEditorTitle { get; set; } = "Menu package editor";
+        public string MenuPackageEditorSectionTitle { get; set; } = "Package settings";
+        public string MenuPackageEditorOutputPackageLabel { get; set; } = "Generated package";
+        public string MenuPackageEditorOutputEmpty { get; set; } = "Not generated yet";
         public string MenuPackageEditorInputFolderLabel { get; set; } = "Input folder";
-        public string MenuPackageEditorInputFolderNotConfigured { get; set; } = "Configure the package input folder in Settings.";
         public string MenuPackageEditorPackageIdLabel { get; set; } = "Package ID";
         public string MenuPackageEditorVersionLabel { get; set; } = "Package version";
         public string MenuPackageEditorVersionPlaceholder { get; set; } = "1.0.0.0";
@@ -56,7 +56,6 @@ namespace ContextMenuCustomApp.Common
         public string MenuPackageEditorStartMenu { get; set; } = "Add to Start menu";
         public string MenuPackageEditorGenerateButton { get; set; } = "Generate and sign";
         public string MenuPackageEditorInstallButton { get; set; } = "Install";
-        public string MenuPackageEditorOutputLabel { get; set; } = "Output";
         public string MenuPackageEditorStatusEnterPackageId { get; set; } = "Enter a package ID.";
         public string MenuPackageEditorStatusDisplayNameRequired { get; set; } = "App display name cannot be empty.";
         public string MenuPackageEditorStatusVersionRequired { get; set; } = "Version cannot be empty.";
@@ -65,13 +64,10 @@ namespace ContextMenuCustomApp.Common
         public string MenuPackageEditorStatusManifestMissing { get; set; } = "AppxManifest not found: {0}";
         public string MenuPackageEditorStatusPublisherMissing { get; set; } = "Publisher is missing (settings or manifest).";
         public string MenuPackageEditorStatusManifestUpdateFailed { get; set; } = "Failed to update AppxManifest: {0}";
-        public string MenuPackageEditorCopyTemplateFilesFailed { get; set; } = "Failed to copy template files";
-        public string MenuPackageEditorGeneratepackageFailed { get; set; } = "Failed to generate package";
         public string MenuPackageEditorStatusPackaging { get; set; } = "Packaging...";
         public string MenuPackageEditorStatusGenerateFirst { get; set; } = "Generate the package first.";
         public string MenuPackageEditorStatusInstalling { get; set; } = "Installing...";
         public string MenuPackageEditorStatusInstallSuccess { get; set; } = "Installation completed.";
-        public string MenuPackageEditorStatusInstallFailed { get; set; } = "Installation failed: {0}";
 
         public string MenuPackageDetailTitle { get; set; } = "Menu details";
         public string MenuPackageDetailRefreshButton { get; set; } = "Refresh";
@@ -123,13 +119,21 @@ namespace ContextMenuCustomApp.Common
         public string MenuPackageSettingsStatusPackageNotReady { get; set; } = "Package information is not ready.";
 
         public string TemplateTitle { get; set; } = "Template";
-        public string TemplateInfoTabTitle { get; set; } = "Template info";
-        public string TemplateImportTabTitle { get; set; } = "Import template";
+        public string TemplateSectionTitle { get; set; } = "Template package";
+        public string TemplateFolderLabel { get; set; } = "Template folder";
         public string TemplateInfoIdentityLabel { get; set; } = "Identity";
         public string TemplateInfoDisplayNameLabel { get; set; } = "Display name";
+        public string TemplatePublisherLabel { get; set; } = "Publisher";
+        public string TemplateVersionLabel { get; set; } = "Version";
+        public string TemplateArchitectureLabel { get; set; } = "Processor architecture";
+        public string TemplateStateReady { get; set; } = "Ready";
+        public string TemplateStateNotImported { get; set; } = "Not imported";
+        public string TemplateStateManifestMissing { get; set; } = "Manifest missing";
+        public string TemplateStateIdentityMissing { get; set; } = "Identity missing";
+        public string TemplateImportTitle { get; set; } = "Import template";
+        public string TemplateReloadButton { get; set; } = "Reload template";
         public string TemplateOpenFolderButton { get; set; } = "Open template folder";
         public string TemplateDownloadButton { get; set; } = "Download template";
-        public string TemplateDownloadHint { get; set; } = "Download ContextMenuCustom-CMC_ANY-XXX.zip and unzip it, Important: Only Supoort *CMC_ANY*";
         public string TemplateImportInstruction { get; set; } = "Select the ContextMenuCustomAnyPackage_x_x.msix to import";
         public string TemplatePickFileButton { get; set; } = "Select file";
         public string TemplateImportButton { get; set; } = "Import";
@@ -179,20 +183,47 @@ namespace ContextMenuCustomApp.Common
         public string MenuPackageServiceLaunchFailed { get; set; } = "Failed to launch the app.";
         public string MenuPackageServiceInstallPathEmpty { get; set; } = "Package path cannot be empty.";
         public string MenuPackageServiceInstallFileMissing { get; set; } = "Package file does not exist: {0}";
+        public string MenuPackageServiceInstallFailed { get; set; } = "Failed to install package: {0}";
+        public string MenuPackageServiceRemoveFailed { get; set; } = "Failed to remove package: {0}";
+        public string MenuPackageServiceCliNotConfigured { get; set; } = "WinApp CLI path is not configured.";
+        public string MenuPackageServiceCertificateNotConfigured { get; set; } = "Certificate is not configured.";
+        public string MenuPackageServiceCertificateMissing { get; set; } = "Certificate file does not exist: {0}";
+        public string MenuPackageServiceCertificateInvalid { get; set; } = "Failed to load certificate {0}: {1}";
+
+        public string MenuPackageStatusSelectMenus { get; set; } = "Select a package to open its menus";
+        public string MenuPackageUninstallConfirmTitle { get; set; } = "Uninstall package";
+        public string MenuPackageUninstallConfirmContent { get; set; } = "Uninstall {0}? The installed app and its menus will be removed.";
+
+        public string MenuPackageEditorStatusCopyingTemplate { get; set; } = "Copying template files...";
+        public string MenuPackageEditorStatusReadingCertificate { get; set; } = "Reading signing certificate...";
+        public string MenuPackageEditorStatusUpdatingManifest { get; set; } = "Updating AppxManifest...";
+        public string MenuPackageEditorStatusVerifying { get; set; } = "Verifying package...";
+        public string MenuPackageEditorStatusPackFailed { get; set; } = "Packaging failed: {0}";
+        public string MenuPackageEditorStatusOutputMissing { get; set; } = "Package output is missing: {0}";
+        public string MenuPackageEditorStatusBuildFailed { get; set; } = "Failed to generate package: {0}";
+        public string MenuPackageEditorStatusPackageIdTooLong { get; set; } = "Package id cannot exceed {0} characters.";
+        public string MenuPackageEditorStatusPackageIdInvalid { get; set; } = "Package id contains an unsupported character: {0}";
+        public string MenuPackageEditorStatusVersionInvalid { get; set; } = "Version must have four numeric parts, e.g. 1.0.0.0: {0}";
+        public string MenuPackageEditorStatusGenerated { get; set; } = "Package generated: {0}";
+        public string MenuPackageEditorOpenOutputFolder { get; set; } = "Open output folder";
 
         public string WinAppCliServiceStartFailed { get; set; } = "Failed to start WinApp CLI: {0}";
 
         public string CertificatesTitle { get; set; } = "Certificate";
-        public string CertificatesInfoTabTitle { get; set; } = "Certificate info";
-        public string CertificatesImportTabTitle { get; set; } = "Import existing certificate";
-        public string CertificatesCreateTabTitle { get; set; } = "Create certificate";
         public string CertificatesCurrentSectionTitle { get; set; } = "Current certificate";
-        public string CertificatesFileLabel { get; set; } = "Certificate file:";
+        public string CertificatesFileLabel { get; set; } = "Certificate file";
+        public string CertificatesSubjectLabel { get; set; } = "Subject";
+        public string CertificatesExpireLabel { get; set; } = "Expires";
+        public string CertificatesTrustLabel { get; set; } = "Trust status";
+        public string CertificatesImportTitle { get; set; } = "Import certificate";
+        public string CertificatesCreateTitle { get; set; } = "Create certificate";
+        public string CertificatesImportDialogDescription { get; set; } = "Select a PFX file and enter the password that protects it. The file is copied into the app data folder.";
+        public string CertificatesCreateDialogDescription { get; set; } = "A self-signed certificate is generated by WinApp CLI and copied into the app data folder.";
+        public string CertificatesInstallSuccess { get; set; } = "Certificate installed successfully.";
         public string CertificatesPasswordHeader { get; set; } = "Password";
         public string CertificatesPasswordPlaceholder { get; set; } = "Password";
         public string CertificatesRememberPassword { get; set; } = "Remember password";
         public string CertificatesReloadButton { get; set; } = "Reload certificate";
-        public string CertificatesInstallLocalButton { get; set; } = "Install locally";
         public string CertificatesInstallCliButton { get; set; } = "Install As Trusted Cert";
         public string CertificatesOpenManagerButton { get; set; } = "Open Windows Certificate Manager";
         public string CertificatesPickButton { get; set; } = "Select cert PFX";
@@ -207,13 +238,10 @@ namespace ContextMenuCustomApp.Common
         public string CertificatesCliPasswordHeader { get; set; } = "PFX password";
         public string CertificatesCliPasswordPlaceholder { get; set; } = "Defaults to 'password'";
         public string CertificatesCreateButton { get; set; } = "Create";
-        public string CertificatesOutputLabel { get; set; } = "Output";
 
         public string CertificatesNoCertificatePlaceholder { get; set; } = "No certificate";
         public string CertificatesStatusFileMissing { get; set; } = "Certificate file not found.";
         public string CertificatesStatusLoadSuccess { get; set; } = "Certificate loaded successfully.";
-        public string CertificatesStatusSubjectFormat { get; set; } = "Subject: {0}";
-        public string CertificatesStatusExpireFormat { get; set; } = "Expires: {0}";
         public string CertificatesStatusInstalledFormat { get; set; } = "Installed(Local Machine > Trusted People): {0}";
         public string CertificatesStatusInstalledYes { get; set; } = "Yes";
         public string CertificatesStatusInstalledNo { get; set; } = "No";
@@ -240,6 +268,7 @@ namespace ContextMenuCustomApp.Common
         public string Win11ShellMenuBlockedOff { get; set; } = "Enabled";
         public string Win11ShellMenuStatusLoaded { get; set; } = "Loaded {0} item(s) from {1} package(s).";
         public string Win11ShellMenuStatusLoadFailed { get; set; } = "Failed to load: {0}";
+        public string Win11ShellMenuStatusOpenFolderFailed { get; set; } = "Failed to open install folder: {0}";
         public string Win11ShellMenuStatusSetBlockedFailed { get; set; } = "Failed to update blocked state: {0}";
         public string Win11ShellMenuStatusAdminRequired { get; set; } = "Administrator privileges are required to modify shell extension block state.";
         public string Win11ShellMenuOpenAppLabel { get; set; } = "Open app";

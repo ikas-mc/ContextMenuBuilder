@@ -1,4 +1,5 @@
 using ContextMenuBuilder.Core.View.Common;
+using ContextMenuBuilder.Views.MenuPackage.PackageList;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -96,6 +97,14 @@ namespace ContextMenuBuilder
             }
 
             NavigateTo(tag);
+        }
+
+        private void ShellBackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ContentFrame.CanGoBack)
+            {
+                ContentFrame.GoBack();
+            }
         }
 
         private NavigationViewItem? FindNavigationItemByTag(string tag)

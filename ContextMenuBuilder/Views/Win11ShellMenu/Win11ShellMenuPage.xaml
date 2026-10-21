@@ -8,6 +8,7 @@
     xmlns:local="using:ContextMenuBuilder"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:r="using:ContextMenuBuilder"
+    xmlns:svc="using:ContextMenuBuilder.Service.Win11ShellMenu"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -101,7 +102,7 @@
         <!--  COM item row  -->
         <DataTemplate
             x:Key="ComItemRowTemplate"
-            x:DataType="local:Win11ShellComItem">
+            x:DataType="svc:Win11ShellComItem">
             <Grid
                 Height="56"
                 Padding="0,8,4,8"
@@ -201,7 +202,7 @@
             Margin="8,0,8,8"
             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
             Style="{ThemeResource CaptionTextBlockStyle}"
-            Text="{x:Bind ViewModel.Message, Mode=OneWay}"
+            Text="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
             TextWrapping="Wrap" />
     </Grid>
 </Page>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
+		<TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
 		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
 		<RootNamespace>ContextMenuBuilder</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
@@ -24,6 +24,16 @@
 		<!---->
 		<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="Views\MenuManager\**" />
+	  <Compile Remove="View\**" />
+	  <EmbeddedResource Remove="Views\MenuManager\**" />
+	  <EmbeddedResource Remove="View\**" />
+	  <None Remove="Views\MenuManager\**" />
+	  <None Remove="View\**" />
+	  <Page Remove="Views\MenuManager\**" />
+	  <Page Remove="View\**" />
+	</ItemGroup>
 	<ItemGroup>
 		<Content Remove="Assets\BadgeLogo.scale-100.png" />
 		<Content Remove="Assets\BadgeLogo.scale-125.png" />
@@ -65,26 +75,18 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
+		<PackageReference Include="NLog" Version="6.2.2" />
 		<PackageReference Include="System.Drawing.Common" Version="10.0.13" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="TemplatePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</None>
-		<None Update="Views\MenuPackage\MenuPackageEditorNewPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Modules\Certificate\" />
-		<Folder Include="Modules\Package\" />
-		<Folder Include="Modules\Template\" />
 		<Folder Include="Views\Certificate\" />
 		<Folder Include="Views\Setting\" />
 		<Folder Include="Views\Template\" />
-		<Folder Include="Views\MenuManager\" />
-		<Folder Include="View\Common\" />
 	</ItemGroup>
 
 	<!--
@@ -131,4 +133,10 @@
 		<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;WINUI3;ContextMenuBuilder</DefineConstants>
 	</PropertyGroup>
 	<Import Project="..\ContextMenuForWindows11\ContextMenuCustom\ContextMenuCustomShare\ContextMenuCustomShare.projitems" Label="Shared" />
+	<ItemGroup>
+	  <PRIResource Remove="View\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PRIResource Remove="Views\MenuManager\**" />
+	</ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-using ContextMenuBuilder.Core.View.Common;
+﻿using ContextMenuBuilder.Core.View.Common;
 using ContextMenuBuilder.Core.View.Controls;
 using ContextMenuCustomApp.Common;
 using ContextMenuCustomApp.Service.Menu;
@@ -10,18 +10,22 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.System;
+using ContextMenuBuilder.Service.MenuPackage;
+using ContextMenuBuilder.Views.MenuPackage.PackageList;
 
-namespace ContextMenuBuilder
+namespace ContextMenuBuilder.Views.MenuPackage.PackageMenu
 {
     public sealed partial class MenuPage : Page
     {
         private string? _backupFolderPath;
         private string? _menusFolderPath;
-        private MenuPackageView? _package;
+        private MenuPackageInfo? _package;
+        private readonly MenuPackageService _packageService = new();
         public AppLang AppLang
         {
             get; private set;
@@ -58,8 +62,8 @@ namespace ContextMenuBuilder
         {
             _menusFolderPath = null;
             _backupFolderPath = null;
-            _package = e.Parameter as MenuPackageView;
-            if (null != _package && _package.IdFamilyName is string familyName)
+            _package = e.Parameter as MenuPackageInfo;
+            if (null != _package && _package.FamilyName is string familyName)
             {
                 PageHeader.Header = $"{_package.ApplicationDisplayName} ({_package.IdName})";
 
@@ -344,7 +348,7 @@ namespace ContextMenuBuilder
 
         private async Task ShowPackageSettingsAsync()
         {
-            if (_package?.IdFamilyName is not string familyName)
+            if (_package?.FamilyName is not string familyName)
             {
                 this.ShowMessage(AppContext.AppLang.MenuPackageSettingsStatusPackageNotReady, MessageType.Warning);
                 return;
@@ -378,11 +382,11 @@ namespace ContextMenuBuilder
 
         private async void OnOpenClicked(object sender, RoutedEventArgs e)
         {
-            if (_package is MenuPackageView item)
+            if (_package is MenuPackageInfo item)
             {
                 try
                 {
-                    await MenuPackageService.LaunchPackageAsync(item.IdFullName);
+                    await _packageService.LaunchAsync(item, CancellationToken.None);
                 }
                 catch (Exception ex)
                 {

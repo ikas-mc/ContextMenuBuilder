@@ -19,7 +19,7 @@ namespace ContextMenuBuilder
         }
 
         public static readonly DependencyProperty StreamSourceProperty =
-            DependencyProperty.RegisterAttached("StreamSource", typeof(RandomAccessStreamReference), typeof(MenuItemIconLoader), new PropertyMetadata(null, ChangedCallback));
+            DependencyProperty.RegisterAttached("StreamSource", typeof(RandomAccessStreamReference), typeof(AppLogoLoader), new PropertyMetadata(null, ChangedCallback));
 
         public async static void ChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

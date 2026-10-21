@@ -1,4 +1,4 @@
-using ContextMenuBuilder.Core.View.Common;
+﻿using ContextMenuBuilder.Core.View.Common;
 using ContextMenuBuilder.Modules.File;
 using ContextMenuCustomApp.Common;
 using Microsoft.UI.Xaml;
@@ -7,7 +7,7 @@ using System;
 using System.ComponentModel;
 using Windows.Storage.Pickers;
 
-namespace ContextMenuBuilder
+namespace ContextMenuBuilder.Views.MenuPackage.PackageMenu
 {
     public sealed partial class MenuPackageSettingsControl : UserControl, INotifyPropertyChanged
     {

@@ -37,11 +37,15 @@
         <controls:PageHeader Header="{x:Bind r:AppContext.AppLang.SettingsTitle, Mode=OneWay}" />
 
         <ScrollViewer Grid.Row="1">
-            <StackPanel Padding="8,8,16,16" Spacing="12">
+            <StackPanel
+                Padding="8,8,16,16"
+                Spacing="12">
                 <StackPanel Spacing="{StaticResource SettingsCardSpacing}">
                     <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.SettingsWinAppCliHeader, Mode=OneWay}">
                         <ccwc:SettingsCard.HeaderIcon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xEC7A;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xEC7A;" />
                         </ccwc:SettingsCard.HeaderIcon>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -64,7 +68,9 @@
 
                     <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.SettingsMenuPackagePrefixHeader, Mode=OneWay}">
                         <ccwc:SettingsCard.HeaderIcon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE773;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE773;" />
                         </ccwc:SettingsCard.HeaderIcon>
                         <TextBox
                             x:Name="MenuPackagePrefixBox"
@@ -74,7 +80,9 @@
 
                     <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.SettingsMenuBackupRootHeader, Mode=OneWay}">
                         <ccwc:SettingsCard.HeaderIcon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xE96A;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xE96A;" />
                         </ccwc:SettingsCard.HeaderIcon>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -98,7 +106,9 @@
 
                     <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.SettingsMenuInputRootHeader, Mode=OneWay}">
                         <ccwc:SettingsCard.HeaderIcon>
-                            <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF012;" />
+                            <FontIcon
+                                FontFamily="Segoe Fluent Icons"
+                                Glyph="&#xF012;" />
                         </ccwc:SettingsCard.HeaderIcon>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -123,12 +133,18 @@
 
 
 
-                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{x:Bind r:AppContext.AppLang.SettingLanguagesGroup}" />
+                <TextBlock
+                    Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                    Text="{x:Bind r:AppContext.AppLang.SettingLanguagesGroup}" />
 
 
-                <ccwc:SettingsExpander Header="{x:Bind r:AppContext.AppLang.SettingLanguages}" IsExpanded="False">
+                <ccwc:SettingsExpander
+                    Header="{x:Bind r:AppContext.AppLang.SettingLanguages}"
+                    IsExpanded="False">
                     <ccwc:SettingsExpander.HeaderIcon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF2B7;" />
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF2B7;" />
                     </ccwc:SettingsExpander.HeaderIcon>
                     <!--
  <ccwc:SettingsExpander.Description>
@@ -197,12 +213,18 @@
                     </ccwc:SettingsExpander.Items>
                 </ccwc:SettingsExpander>
 
-                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{x:Bind r:AppContext.AppLang.AppSettingData}" />
+                <TextBlock
+                    Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                    Text="{x:Bind r:AppContext.AppLang.AppSettingData}" />
 
 
-                <ccwc:SettingsExpander Header="{x:Bind r:AppContext.AppLang.SavedData}" IsExpanded="False">
+                <ccwc:SettingsExpander
+                    Header="{x:Bind r:AppContext.AppLang.SavedData}"
+                    IsExpanded="False">
                     <ccwc:SettingsExpander.HeaderIcon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF12B;" />
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF12B;" />
                     </ccwc:SettingsExpander.HeaderIcon>
                     <ccwc:SettingsExpander.Items>
                         <ccwc:SettingsCard>
@@ -215,11 +237,15 @@
                     </ccwc:SettingsExpander.Items>
                 </ccwc:SettingsExpander>
 
-                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{x:Bind r:AppContext.AppLang.SettingOtherSectionTitle}" />
+                <TextBlock
+                    Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                    Text="{x:Bind r:AppContext.AppLang.SettingOtherSectionTitle}" />
 
                 <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.RestartAppLabel}">
                     <ccwc:SettingsCard.HeaderIcon>
-                        <FontIcon FontFamily="Segoe Fluent Icons" Glyph="&#xF83E;" />
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xF83E;" />
                     </ccwc:SettingsCard.HeaderIcon>
                     <Button
                         Width="160"

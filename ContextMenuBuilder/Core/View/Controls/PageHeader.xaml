@@ -15,7 +15,8 @@
             Margin="8,0,160,0"
             VerticalAlignment="Top"
             Style="{ThemeResource TitleTextBlockStyle}"
-            Text="{x:Bind Header, Mode=OneWay}" />
+            Text="{x:Bind Header, Mode=OneWay}"
+            TextWrapping="NoWrap" />
 
         <muxc:ProgressBar
             Grid.Row="0"

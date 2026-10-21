@@ -1,5 +1,3 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.IO;
@@ -7,8 +5,11 @@ using System.Threading.Tasks;
 using Windows.Win32;
 using Windows.Win32.UI.WindowsAndMessaging;
 
-namespace ContextMenuBuilder
+namespace ContextMenuBuilder.Views.MenuPackage.PackageMenu
 {
+    /// <summary>
+    /// Loads a bitmap from a shell icon location ("file.exe,index") or an absolute URI.
+    /// </summary>
     public static class AppLogoReader
     {
         public async static Task<BitmapImage?> ReadIconAsync(string url)
@@ -67,39 +68,5 @@ namespace ContextMenuBuilder
 
             return null;
         }
-    }
-
-
-    public static class MenuItemIconLoader
-    {
-        public static string GetSource(DependencyObject obj)
-        {
-            return (string)obj.GetValue(SourceItemProperty);
-        }
-
-        public static void SetSource(DependencyObject obj, string value)
-        {
-            obj.SetValue(SourceItemProperty, value);
-        }
-
-        public static readonly DependencyProperty SourceItemProperty =
-            DependencyProperty.RegisterAttached("Source", typeof(string), typeof(MenuItemIconLoader), new PropertyMetadata(null, ChangedCallback));
-
-        public async static void ChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var image = d as Image;
-            if (image != null && e.NewValue is string path)
-            {
-                image.Source = await AppLogoReader.ReadIconAsync(path);
-                return;
-            }
-
-            if (null != image)
-            {
-                image.Source = null;
-            }
-        }
-
-
     }
 }

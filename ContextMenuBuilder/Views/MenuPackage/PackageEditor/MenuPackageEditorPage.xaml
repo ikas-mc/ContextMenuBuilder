@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="ContextMenuBuilder.Views.MenuPackage.PackageEditor.MenuPackageEditorPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ccwc="using:CommunityToolkit.WinUI.Controls"
+    xmlns:controls="using:ContextMenuBuilder.Core.View.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:r="using:ContextMenuBuilder"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
+
+        <Style
+            x:Key="SettingsSectionHeaderTextBlockStyle"
+            BasedOn="{StaticResource BodyStrongTextBlockStyle}"
+            TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="Margin" Value="2,8,0,0" />
+            </Style.Setters>
+        </Style>
+    </Page.Resources>
+
+    <Grid RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <controls:PageHeader
+            Header="{x:Bind ViewModel.HeaderTitle, Mode=OneWay}"
+            ShowProgress="{x:Bind ViewModel.IsBusy, Mode=OneWay}" />
+
+        <CommandBar
+            Grid.Row="1"
+            Margin="4,0"
+            HorizontalAlignment="Stretch"
+            DefaultLabelPosition="Right"
+            IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}">
+            <AppBarButton
+                Click="OnGenerateClicked"
+                Label="{x:Bind r:AppContext.AppLang.MenuPackageEditorGenerateButton, Mode=OneWay}"
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MenuPackageEditorGenerateButton}">
+                <AppBarButton.Icon>
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        Glyph="&#xE7B8;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton
+                Click="OnInstallClicked"
+                IsEnabled="{x:Bind ViewModel.HasGeneratedPackage, Mode=OneWay}"
+                Label="{x:Bind r:AppContext.AppLang.MenuPackageEditorInstallButton, Mode=OneWay}"
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MenuPackageEditorInstallButton}">
+                <AppBarButton.Icon>
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        Glyph="&#xE8FB;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+            <AppBarButton
+                Click="OnOpenOutputFolderClicked"
+                Label="{x:Bind r:AppContext.AppLang.MenuPackageEditorOpenOutputFolder, Mode=OneWay}"
+                ToolTipService.ToolTip="{x:Bind r:AppContext.AppLang.MenuPackageEditorOpenOutputFolder}">
+                <AppBarButton.Icon>
+                    <FontIcon
+                        FontFamily="Segoe Fluent Icons"
+                        Glyph="&#xE838;" />
+                </AppBarButton.Icon>
+            </AppBarButton>
+        </CommandBar>
+
+        <ScrollViewer Grid.Row="2">
+            <StackPanel
+                Padding="8,0,16,16"
+                Spacing="{StaticResource SettingsCardSpacing}">
+
+                <TextBlock
+                    Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
+                    Text="{x:Bind r:AppContext.AppLang.MenuPackageEditorSectionTitle, Mode=OneWay}" />
+
+                <ccwc:SettingsCard
+                    Description="{x:Bind ViewModel.TemplateFolderPath, Mode=OneWay}"
+                    Header="{x:Bind r:AppContext.AppLang.MenuPackageEditorInputFolderLabel, Mode=OneWay}">
+                    <ccwc:SettingsCard.HeaderIcon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE838;" />
+                    </ccwc:SettingsCard.HeaderIcon>
+                </ccwc:SettingsCard>
+
+                <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.MenuPackageEditorPackageIdLabel, Mode=OneWay}">
+                    <ccwc:SettingsCard.HeaderIcon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE8F1;" />
+                    </ccwc:SettingsCard.HeaderIcon>
+                    <TextBox
+                        x:Name="PackageIdBox"
+                        MinWidth="320"
+                        IsEnabled="{x:Bind ViewModel.IsPackageIdEditable, Mode=OneWay}"
+                        Text="{x:Bind ViewModel.PackageId, Mode=OneWay}" />
+                </ccwc:SettingsCard>
+
+                <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.MenuPackageEditorVersionLabel, Mode=OneWay}">
+                    <ccwc:SettingsCard.HeaderIcon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE946;" />
+                    </ccwc:SettingsCard.HeaderIcon>
+                    <TextBox
+                        x:Name="VersionBox"
+                        MinWidth="320"
+                        PlaceholderText="{x:Bind r:AppContext.AppLang.MenuPackageEditorVersionPlaceholder, Mode=OneWay}"
+                        Text="{x:Bind ViewModel.Version, Mode=OneWay}" />
+                </ccwc:SettingsCard>
+
+                <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.MenuPackageEditorDisplayNameLabel, Mode=OneWay}">
+                    <ccwc:SettingsCard.HeaderIcon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE8A5;" />
+                    </ccwc:SettingsCard.HeaderIcon>
+                    <TextBox
+                        x:Name="AppDisplayNameBox"
+                        MinWidth="320"
+                        PlaceholderText="{x:Bind r:AppContext.AppLang.MenuPackageEditorDisplayNamePlaceholder, Mode=OneWay}"
+                        Text="{x:Bind ViewModel.DisplayName, Mode=OneWay}" />
+                </ccwc:SettingsCard>
+
+                <ccwc:SettingsCard Header="{x:Bind r:AppContext.AppLang.MenuPackageEditorStartMenu, Mode=OneWay}">
+                    <ccwc:SettingsCard.HeaderIcon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE718;" />
+                    </ccwc:SettingsCard.HeaderIcon>
+                    <ToggleSwitch
+                        x:Name="StartMenuSwitch"
+                        IsOn="{x:Bind ViewModel.AddToStartMenu, Mode=OneWay}" />
+                </ccwc:SettingsCard>
+
+                <ccwc:SettingsCard
+                    Description="{x:Bind ViewModel.GeneratedPackageDisplay, Mode=OneWay}"
+                    Header="{x:Bind r:AppContext.AppLang.MenuPackageEditorOutputPackageLabel, Mode=OneWay}">
+                    <ccwc:SettingsCard.HeaderIcon>
+                        <FontIcon
+                            FontFamily="Segoe Fluent Icons"
+                            Glyph="&#xE7B8;" />
+                    </ccwc:SettingsCard.HeaderIcon>
+                </ccwc:SettingsCard>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <TextBlock
+            Grid.Row="3"
+            Margin="8,0,8,8"
+            Text="{x:Bind ViewModel.Message, Mode=OneWay}"
+            TextWrapping="Wrap"
+            Visibility="{x:Bind ViewModel.IsMessageOpen, Mode=OneWay}" />
+    </Grid>
+</Page>

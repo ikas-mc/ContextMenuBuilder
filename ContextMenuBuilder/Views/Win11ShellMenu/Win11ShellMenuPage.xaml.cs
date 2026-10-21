@@ -1,100 +1,191 @@
 using ContextMenuBuilder.Core.View.Common;
+using ContextMenuBuilder.Service.Win11ShellMenu;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.System;
 
 namespace ContextMenuBuilder
 {
     public sealed partial class Win11ShellMenuPage : Page
     {
-        public Win11ShellMenuViewModel ViewModel { get; } = new Win11ShellMenuViewModel();
+        private CancellationTokenSource? _operationSource;
+        private Win11ShellPackageRow? _contextRow;
+        private Win11ShellComItem? _contextComItem;
 
-        private Win11ShellPackageRow? _rightTappedPackageRow;
-        private Win11ShellComItem? _rightTappedComItem;
+        public Win11ShellMenuViewModel ViewModel { get; } = new();
 
         public Win11ShellMenuPage()
         {
             InitializeComponent();
-            this.RegisterMessageHandler(ViewModel);
+            Unloaded += OnUnloaded;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            await ViewModel.LoadAsync();
+            await LoadAsync();
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            CancelOperations();
         }
 
         private async void OnRefreshClicked(object sender, RoutedEventArgs e)
         {
-            await ViewModel.LoadAsync();
+            await LoadAsync();
         }
 
         private async void OnBlockToggled(object sender, RoutedEventArgs e)
         {
-            if (sender is not CheckBox checkBox || checkBox.Tag is not Win11ShellComItem item) return;
-
-            var isChecked = checkBox.IsChecked;
-            if (isChecked == null) return;
-
-            bool blocked = !isChecked.Value;
-            await ViewModel.SetBlockedAsync(item, blocked);
-
-            if (item.IsEnabled != !blocked)
+            if (sender is not CheckBox checkBox)
             {
-                checkBox.IsChecked = item.IsEnabled;
+                return;
             }
+
+            if (checkBox.Tag is not Win11ShellComItem item)
+            {
+                return;
+            }
+
+            if (checkBox.IsChecked is null)
+            {
+                return;
+            }
+
+            var blocked = !checkBox.IsChecked.Value;
+            await ViewModel.SetBlockedAsync(item, blocked, ReplaceOperationSource().Token);
+
+            if (checkBox.IsChecked == item.IsEnabled)
+            {
+                return;
+            }
+
+            checkBox.IsChecked = item.IsEnabled;
         }
 
         private void OnPackageContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
-            if (sender is FrameworkElement fe && fe.Tag is Win11ShellPackageRow row)
+            if (sender is not FrameworkElement element)
             {
-                _rightTappedPackageRow = row;
-                ContextMenuHelper.ShowAt(PackageContextFlyout, sender, args);
+                return;
             }
+
+            if (element.Tag is not Win11ShellPackageRow row)
+            {
+                return;
+            }
+
+            _contextRow = row;
+            ContextMenuHelper.ShowAt(PackageContextFlyout, sender, args);
         }
 
         private async void OnOpenAppClicked(object sender, RoutedEventArgs e)
         {
-            if (_rightTappedPackageRow is not null)
-                await ViewModel.LaunchAppAsync(_rightTappedPackageRow);
+            var row = _contextRow;
+            if (row is null)
+            {
+                return;
+            }
+
+            await ViewModel.LaunchAsync(row, ReplaceOperationSource().Token);
         }
 
-        private void OnOpenInstallFolderClicked(object sender, RoutedEventArgs e)
+        private async void OnOpenInstallFolderClicked(object sender, RoutedEventArgs e)
         {
-            if (_rightTappedPackageRow is not null)
-                ViewModel.OpenInstallFolder(_rightTappedPackageRow);
+            var row = _contextRow;
+            if (row is null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(row.InstallPath))
+            {
+                return;
+            }
+
+            try
+            {
+                await Launcher.LaunchFolderPathAsync(row.InstallPath);
+            }
+            catch (Exception ex)
+            {
+                ViewModel.ReportStatus(string.Format(AppContext.AppLang.Win11ShellMenuStatusOpenFolderFailed, ex.Message));
+            }
         }
 
         private void OnComItemContextRequested(UIElement sender, ContextRequestedEventArgs args)
         {
-            if (sender is FrameworkElement fe && fe.Tag is Win11ShellComItem item)
+            if (sender is not FrameworkElement element)
             {
-                _rightTappedComItem = item;
-                var flyout = ComItemContextFlyout;
-                if (flyout.Items.Count > 1)
-                {
-                    if (item.IsEnabled)
-                    {
-                        flyout.Items[0].Visibility = Visibility.Collapsed;
-                        flyout.Items[1].Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        flyout.Items[0].Visibility = Visibility.Visible;
-                        flyout.Items[1].Visibility = Visibility.Collapsed;
-                    }
-                }
-
-                ContextMenuHelper.ShowAt(flyout, sender, args);
+                return;
             }
+
+            if (element.Tag is not Win11ShellComItem item)
+            {
+                return;
+            }
+
+            _contextComItem = item;
+
+            var flyout = ComItemContextFlyout;
+            if (flyout.Items.Count > 1)
+            {
+                if (item.IsEnabled)
+                {
+                    flyout.Items[0].Visibility = Visibility.Collapsed;
+                    flyout.Items[1].Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    flyout.Items[0].Visibility = Visibility.Visible;
+                    flyout.Items[1].Visibility = Visibility.Collapsed;
+                }
+            }
+
+            ContextMenuHelper.ShowAt(flyout, sender, args);
         }
 
         private async void OnComItemContextToggleClicked(object sender, RoutedEventArgs e)
         {
-            if (_rightTappedComItem is not null)
-                await ViewModel.SetBlockedAsync(_rightTappedComItem, _rightTappedComItem.IsEnabled);
+            var item = _contextComItem;
+            if (item is null)
+            {
+                return;
+            }
+
+            await ViewModel.SetBlockedAsync(item, item.IsEnabled, ReplaceOperationSource().Token);
+        }
+
+        private async Task LoadAsync()
+        {
+            await ViewModel.LoadAsync(ReplaceOperationSource().Token);
+        }
+
+        private CancellationTokenSource ReplaceOperationSource()
+        {
+            CancelOperations();
+            var source = new CancellationTokenSource();
+            _operationSource = source;
+            return source;
+        }
+
+        private void CancelOperations()
+        {
+            var source = _operationSource;
+            if (source is null)
+            {
+                return;
+            }
+
+            _operationSource = null;
+            source.Cancel();
+            source.Dispose();
         }
     }
 }

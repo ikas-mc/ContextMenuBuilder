@@ -1,6 +1,6 @@
-using ContextMenuCustomApp.Common;
+﻿using ContextMenuCustomApp.Common;
 
-namespace ContextMenuBuilder
+namespace ContextMenuBuilder.Views.MenuPackage.PackageMenu
 {
     public partial class MenuPackageSettings
     {

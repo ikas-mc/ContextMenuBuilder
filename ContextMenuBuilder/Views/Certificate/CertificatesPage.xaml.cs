@@ -1,357 +1,171 @@
-using ContextMenuBuilder.Modules.File;
 using ContextMenuCustomApp.Common;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Windows.Storage.Pickers;
 
 namespace ContextMenuBuilder
 {
     public sealed partial class CertificatesPage : Page
     {
+        private CancellationTokenSource? _operationSource;
+        private ContentDialog? _activeDialog;
+        private bool _isActive;
+
+        public CertificatesViewModel ViewModel { get; } = new();
+
         public CertificatesPage()
         {
             InitializeComponent();
             Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
         }
 
-        private string _currentPfxPath;
-        private string? _importSourcePath;
-        private X509Certificate2? _loadedCertificate;
-        private bool _isInitializing;
-        private static readonly StoreName[] TrackedStores = new[] { StoreName.TrustedPeople, StoreName.TrustedPublisher };
-        private AppLang Lang => AppContext.AppLang;
+        private static AppLang Lang => AppContext.AppLang;
 
         private async void OnLoaded(object sender, RoutedEventArgs e)
         {
-            _isInitializing = true;
-            _currentPfxPath = AppContext.AppSettings.CertPath;
+            _isActive = true;
 
-            CliSubjectBox.Text = "CN=CMC-TEST";
-            CliValidDaysBox.Text = "3650";
-            ImportPathText.Text = Lang.CertificatesImportNoSelection;
+            var source = ReplaceOperationSource();
+            await ViewModel.InitializeAsync(source.Token);
 
-            var savedPassword = AppContext.AppSettings.CertPassword;
-            var hasSaved = !string.IsNullOrEmpty(savedPassword);
-            RememberPasswordCheckBox.IsChecked = hasSaved;
-            if (hasSaved)
+            if (!_isActive)
             {
-                CurrentCertPasswordBox.Password = savedPassword;
-            }
-
-            _isInitializing = false;
-
-            await RefreshCurrentCertificateAsync();
-        }
-
-        private async Task RefreshCurrentCertificateAsync()
-        {
-            if (!File.Exists(_currentPfxPath))
-            {
-                ShowNoCertificateState();
                 return;
             }
 
-            UpdateCertPathDisplay();
-            await LoadCertificateDetailsAsync();
+            CurrentCertPasswordBox.Password = ViewModel.InitialPassword;
+            AttachInteractionEvents();
         }
 
-        private void UpdateCertPathDisplay()
+        private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            var exists = File.Exists(_currentPfxPath);
-            var display = exists ? Path.GetFileName(_currentPfxPath) : Lang.CertificatesNoCertificatePlaceholder;
-            CurrentCertPathText.Text = display;
-            ToolTipService.SetToolTip(CurrentCertPathText, exists ? _currentPfxPath : null);
+            _isActive = false;
+            _activeDialog?.Hide();
+            DetachInteractionEvents();
+            CancelOperations();
         }
 
-        private void ShowNoCertificateState()
+        private void AttachInteractionEvents()
         {
-            DisposeLoadedCertificate();
-            CurrentCertPathText.Text = Lang.CertificatesNoCertificatePlaceholder;
-            ToolTipService.SetToolTip(CurrentCertPathText, null);
-            CertStatusText.Text = Lang.CertificatesStatusFileMissing;
-            CertSubjectText.Text = string.Empty;
-            CertExpireText.Text = string.Empty;
-            CertInstalledText.Text = string.Empty;
-            InstallWithCliButton.Visibility = Visibility.Collapsed;
+            DetachInteractionEvents();
+            CurrentCertPasswordBox.PasswordChanged += OnCurrentPasswordChanged;
         }
 
-        private async Task LoadCertificateDetailsAsync()
+        private void DetachInteractionEvents()
         {
-            DisposeLoadedCertificate();
-            try
+            CurrentCertPasswordBox.PasswordChanged -= OnCurrentPasswordChanged;
+        }
+
+        private async void OnImportCertificateClicked(object sender, RoutedEventArgs e)
+        {
+            var source = ReplaceOperationSource();
+            ViewModel.DismissMessage();
+
+            var control = new ImportCertificateControl(ViewModel);
+            var dialog = CreateDialog(Lang.CertificatesImportTitle, Lang.CertificatesImportButton, control);
+
+            dialog.PrimaryButtonClick += async (dialogSender, args) =>
             {
-                var password = CurrentCertPasswordBox.Password;
-                _loadedCertificate = LoadCertificate(_currentPfxPath, password);
-                CertStatusText.Text = Lang.CertificatesStatusLoadSuccess;
-                CertSubjectText.Text = string.Format(Lang.CertificatesStatusSubjectFormat, _loadedCertificate.Subject);
-                CertExpireText.Text = string.Format(Lang.CertificatesStatusExpireFormat, _loadedCertificate.NotAfter);
-                var installed = await Task.Run(() => IsCertificateInstalled(_loadedCertificate));
-                var installedText = installed ? Lang.CertificatesStatusInstalledYes : Lang.CertificatesStatusInstalledNo;
-                CertInstalledText.Text = string.Format(Lang.CertificatesStatusInstalledFormat, installedText);
-                InstallWithCliButton.Visibility = installed ? Visibility.Collapsed : Visibility.Visible;
-            }
-            catch (Exception ex)
-            {
-                DisposeLoadedCertificate();
-                CertStatusText.Text = string.Format(Lang.CertificatesStatusLoadFailed, ex.Message);
-                CertSubjectText.Text = string.Empty;
-                CertExpireText.Text = string.Empty;
-                CertInstalledText.Text = string.Empty;
-                InstallWithCliButton.Visibility = Visibility.Collapsed;
-            }
-        }
+                var deferral = args.GetDeferral();
+                dialogSender.IsPrimaryButtonEnabled = false;
 
-        private static X509Certificate2 LoadCertificate(string path, string? password)
-        {
-            var flags = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet;
-            return new X509Certificate2(path, password, flags);
-        }
-
-        private static bool IsCertificateInstalled(X509Certificate2 certificate)
-        {
-            foreach (var store in TrackedStores)
-            {
-                if (IsInStore(store, StoreLocation.LocalMachine, certificate))
+                try
                 {
-                    return true;
+                    args.Cancel = !await control.ConfirmAsync(source.Token);
                 }
-            }
+                finally
+                {
+                    dialogSender.IsPrimaryButtonEnabled = true;
+                    deferral.Complete();
+                }
+            };
 
-            return false;
+            await ShowDialogAsync(dialog);
+            CurrentCertPasswordBox.Password = ViewModel.InitialPassword;
         }
 
-        private static bool IsInStore(StoreName storeName, StoreLocation location, X509Certificate2 certificate)
+        private async void OnCreateCertificateClicked(object sender, RoutedEventArgs e)
         {
+            var source = ReplaceOperationSource();
+            ViewModel.DismissMessage();
+
+            var control = new CreateCertificateControl(ViewModel);
+            var dialog = CreateDialog(Lang.CertificatesCreateTitle, Lang.CertificatesCreateButton, control);
+
+            dialog.PrimaryButtonClick += async (dialogSender, args) =>
+            {
+                var deferral = args.GetDeferral();
+                dialogSender.IsPrimaryButtonEnabled = false;
+
+                try
+                {
+                    args.Cancel = !await control.ConfirmAsync(source.Token);
+                }
+                finally
+                {
+                    dialogSender.IsPrimaryButtonEnabled = true;
+                    deferral.Complete();
+                }
+            };
+
+            await ShowDialogAsync(dialog);
+            CurrentCertPasswordBox.Password = ViewModel.InitialPassword;
+        }
+
+        private async Task ShowDialogAsync(ContentDialog dialog)
+        {
+            _activeDialog = dialog;
+
             try
             {
-                using var store = new X509Store(storeName, location);
-                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                return store.Certificates.Cast<X509Certificate2>().Any(c => string.Equals(c.Thumbprint, certificate.Thumbprint, StringComparison.OrdinalIgnoreCase));
+                await dialog.ShowAsync();
             }
-            catch
+            finally
             {
-                return false;
+                _activeDialog = null;
             }
         }
 
-        private void DisposeLoadedCertificate()
+        private ContentDialog CreateDialog(string title, string primaryButtonText, object content)
         {
-            _loadedCertificate?.Dispose();
-            _loadedCertificate = null;
+            return new ContentDialog
+            {
+                XamlRoot = XamlRoot,
+                Title = title,
+                Content = content,
+                PrimaryButtonText = primaryButtonText,
+                CloseButtonText = Lang.CommonClose,
+                DefaultButton = ContentDialogButton.Primary,
+            };
+        }
+
+        private void OnMessageClosed(InfoBar sender, InfoBarClosedEventArgs args)
+        {
+            ViewModel.DismissMessage();
         }
 
         private async void OnReloadCertClicked(object sender, RoutedEventArgs e)
         {
-            await RefreshCurrentCertificateAsync();
+            var source = ReplaceOperationSource();
+            if (await ViewModel.ReloadAsync(source.Token))
+            {
+                ViewModel.ReportSuccess(Lang.CertificatesStatusLoadSuccess);
+            }
         }
 
         private void OnCurrentPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (_isInitializing)
-            {
-                return;
-            }
-
-            if (RememberPasswordCheckBox.IsChecked == true)
-            {
-                var value = CurrentCertPasswordBox.Password;
-                AppContext.AppSettings.CertPassword = value;
-            }
-        }
-
-        private void OnRememberPasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (_isInitializing)
-            {
-                return;
-            }
-
-            if (RememberPasswordCheckBox.IsChecked == true)
-            {
-                AppContext.AppSettings.CertPassword = CurrentCertPasswordBox.Password;
-            }
-            else
-            {
-                AppContext.AppSettings.CertPassword = null;
-            }
-        }
-
-        private async void OnPickImportPfxClicked(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                var file = await PickerHelper.PickSingleFileAsync(picker =>
-                {
-                    picker.FileTypeFilter.Add(".pfx");
-                    picker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-                });
-                if (file is null)
-                {
-                    return;
-                }
-
-                _importSourcePath = file.Path;
-                ImportPathText.Text = file.Name;
-            }
-            catch (Exception ex)
-            {
-                OutputBox.Text = string.Format(Lang.CertificatesStatusPickFileFailed, ex.Message);
-            }
-        }
-
-        private async void OnImportCertClicked(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(_importSourcePath) || !File.Exists(_importSourcePath))
-            {
-                OutputBox.Text = Lang.CertificatesStatusSelectPfxFirst;
-                return;
-            }
-
-            var password = ImportPasswordBox.Password;
-            try
-            {
-                using var _ = LoadCertificate(_importSourcePath, string.IsNullOrEmpty(password) ? null : password);
-            }
-            catch (Exception ex)
-            {
-                OutputBox.Text = string.Format(Lang.CertificatesStatusValidateFailed, ex.Message);
-                return;
-            }
-
-            try
-            {
-                BackupIfExists(_currentPfxPath);
-                File.Copy(_importSourcePath, _currentPfxPath, overwrite: true);
-                CurrentCertPasswordBox.Password = password ?? string.Empty;
-                if (RememberPasswordCheckBox.IsChecked == true)
-                {
-                    AppContext.AppSettings.CertPassword = password;
-                }
-
-                OutputBox.Text = string.Format(Lang.CertificatesStatusImportSuccess, _currentPfxPath);
-                await RefreshCurrentCertificateAsync();
-            }
-            catch (Exception ex)
-            {
-                OutputBox.Text = string.Format(Lang.CertificatesStatusImportFailed, ex.Message);
-            }
-        }
-
-        private async void OnGenerateWithCliClicked(object sender, RoutedEventArgs e)
-        {
-            var subject = string.IsNullOrWhiteSpace(CliSubjectBox.Text) ? "CN=CMC-TEST" : CliSubjectBox.Text.Trim();
-            var password = CliPasswordBox.Password;
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                password = "password";
-            }
-
-            var workingDir = Path.Combine(Path.GetTempPath(), "WinAppCliCert");
-            Directory.CreateDirectory(workingDir);
-
-            var outputFileName = "cert_tmp.pfx";
-            var resolvedOutput = Path.Combine(workingDir, outputFileName);
-
-            var validDays = 365;
-            if (!string.IsNullOrWhiteSpace(CliValidDaysBox.Text) && int.TryParse(CliValidDaysBox.Text, out var parsed) && parsed > 0)
-            {
-                validDays = parsed;
-            }
-
-            var args = new StringBuilder("cert generate");
-            args.Append($" --output \"{outputFileName}\"");
-            args.Append($" --valid-days {validDays}");
-            args.Append(" --if-exists Overwrite");
-            args.Append(" --verbose");
-            args.Append($" --publisher \"{subject}\"");
-            args.Append($" --password \"{password}\"");
-
-            OutputBox.Text = Lang.CertificatesStatusGenerateRunning;
-            var cliResult = await WinAppCliService.RunAsync(args.ToString(), workingDir);
-            var cliOutput = cliResult.Output;
-
-            try
-            {
-                if (!File.Exists(resolvedOutput))
-                {
-                    OutputBox.Text = cliOutput + "\n" + Lang.CertificatesStatusGeneratedFileMissing;
-                    return;
-                }
-
-                BackupIfExists(_currentPfxPath);
-                File.Copy(resolvedOutput, _currentPfxPath, overwrite: true);
-                CurrentCertPasswordBox.Password = password;
-                if (RememberPasswordCheckBox.IsChecked == true)
-                {
-                    AppContext.AppSettings.CertPassword = password;
-                }
-
-                OutputBox.Text = cliOutput + "\n" + string.Format(Lang.CertificatesStatusCopySuccess, _currentPfxPath);
-                await RefreshCurrentCertificateAsync();
-            }
-            catch (Exception ex)
-            {
-                OutputBox.Text = cliOutput + "\n" + string.Format(Lang.CertificatesStatusCopyFailed, ex.Message);
-            }
+            ViewModel.SetCurrentPassword(CurrentCertPasswordBox.Password);
         }
 
         private async void OnInstallWithCliClicked(object sender, RoutedEventArgs e)
         {
-            if (!File.Exists(_currentPfxPath))
-            {
-                OutputBox.Text = Lang.CertificatesStatusFileMissing;
-                return;
-            }
-
-            var password = CurrentCertPasswordBox.Password;
-            var args = new StringBuilder("cert install");
-            args.Append(' ');
-            args.Append('"').Append(_currentPfxPath).Append('"');
-            if (!string.IsNullOrEmpty(password))
-            {
-                args.Append(" --password \"").Append(password).Append('"');
-            }
-
-            OutputBox.Text = Lang.CertificatesStatusInstallCliRunning;
-            var workingDir = Path.GetDirectoryName(_currentPfxPath);
-            var result = await WinAppCliService.RunAsAdmin2Async(args.ToString(), workingDir);
-            OutputBox.Text = result.Output;
-            await RefreshCurrentCertificateAsync();
-        }
-
-        private async void OnInstallCurrentClicked(object sender, RoutedEventArgs e)
-        {
-            if (!File.Exists(_currentPfxPath))
-            {
-                OutputBox.Text = Lang.CertificatesStatusFileMissing;
-                return;
-            }
-
-            var password = CurrentCertPasswordBox.Password;
-
-            var store = StoreName.TrustedPeople;
-
-            try
-            {
-                using var cert = LoadCertificate(_currentPfxPath, string.IsNullOrEmpty(password) ? null : password);
-                using var storeInstance = new X509Store(store, StoreLocation.LocalMachine);
-                storeInstance.Open(OpenFlags.ReadWrite);
-                storeInstance.Add(cert);
-
-                OutputBox.Text = string.Format(Lang.CertificatesStatusInstallLocalSuccess, store, _currentPfxPath);
-                await RefreshCurrentCertificateAsync();
-            }
-            catch (Exception ex)
-            {
-                OutputBox.Text = string.Format(Lang.CertificatesStatusInstallFailed, ex.Message);
-            }
+            var source = ReplaceOperationSource();
+            await ViewModel.InstallWithCliAsync(source.Token);
         }
 
         private void OnOpenCertManagerClicked(object sender, RoutedEventArgs e)
@@ -360,37 +174,36 @@ namespace ContextMenuBuilder
             {
                 var info = new ProcessStartInfo("certlm.msc")
                 {
-                    UseShellExecute = true
+                    UseShellExecute = true,
                 };
+
                 Process.Start(info);
             }
             catch (Exception ex)
             {
-                OutputBox.Text = string.Format(Lang.CertificatesStatusOpenManagerFailed, ex.Message);
+                ViewModel.ReportError(string.Format(Lang.CertificatesStatusOpenManagerFailed, ex.Message));
             }
         }
 
-        private static void BackupIfExists(string path)
+        private CancellationTokenSource ReplaceOperationSource()
         {
-            if (!File.Exists(path))
+            CancelOperations();
+            var source = new CancellationTokenSource();
+            _operationSource = source;
+            return source;
+        }
+
+        private void CancelOperations()
+        {
+            var source = _operationSource;
+            if (source is null)
             {
                 return;
             }
 
-            var directory = Path.GetDirectoryName(path) ?? string.Empty;
-            var fileName = Path.GetFileNameWithoutExtension(path);
-            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-            var backupName = Path.Combine(directory, $"{fileName}_{timestamp}.bak");
-
-            File.Move(path, backupName, overwrite: false);
-        }
-
-        private async void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (sender is Pivot pivot && pivot.SelectedIndex == 0)
-            {
-                await RefreshCurrentCertificateAsync();
-            }
+            _operationSource = null;
+            source.Cancel();
+            source.Dispose();
         }
     }
 }
