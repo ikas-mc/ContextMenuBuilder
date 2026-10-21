@@ -3,10 +3,10 @@
     <Platform Name="ARM64" />
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="../ContextMenuForWindows11/ContextMenuCustom/ContextMenuCustomShare/ContextMenuCustomShare.shproj" Id="ac7748f6-0c0d-4983-ad86-daab06226275" />
   <Project Path="ContextMenuBuilder/ContextMenuBuilder.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
     <Deploy />
   </Project>
+  <Project Path="ContextMenuForWindows11/ContextMenuCustom/ContextMenuCustomShare/ContextMenuCustomShare.shproj" Id="ac7748f6-0c0d-4983-ad86-daab06226275" />
 </Solution>

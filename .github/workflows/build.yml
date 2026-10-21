@@ -12,32 +12,19 @@ jobs:
 
     runs-on: windows-2025-vs2026
     env:
-      Solution_Name: src\ContextMenuBuilder.slnx
+      Solution_Name: ContextMenuBuilder.slnx
       Appx_Package_Dir: ${{github.workspace}}\Packages\
 
     steps:
     - name: Checkout
       uses: actions/checkout@v6
       with:
-        fetch-depth: 0
-
-    - uses: actions/checkout@v6
-      with:
-        repository: ikas-mc/ContextMenuForWindows11
-        ref: 'dev'
         fetch-depth: 1
-        path: ContextMenuForWindows11
         lfs:  true
 
-    - uses: actions/checkout@v6
-      with:
-        repository: ikas-mc/ContextMenuBuilderPoc
-        ref: 'dev'
-        fetch-depth: 1
-        token: ${{ secrets.GH_PAT }}
-        path: src
-        lfs:  true
-
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
+ 
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v2
 
@@ -45,7 +32,6 @@ jobs:
       working-directory: ${{github.workspace}}
       run: |
         $env:VERSION_BUILD_NUMBER = "${{github.run_number}}"
-        cd src
         .\update-version.ps1
 
     - name: Restore the application

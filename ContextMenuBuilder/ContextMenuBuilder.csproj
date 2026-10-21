@@ -130,5 +130,5 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
 		<DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN;WINUI3;ContextMenuBuilder</DefineConstants>
 	</PropertyGroup>
-	<Import Project="..\..\ContextMenuForWindows11\ContextMenuCustom\ContextMenuCustomShare\ContextMenuCustomShare.projitems" Label="Shared" />
+	<Import Project="..\ContextMenuForWindows11\ContextMenuCustom\ContextMenuCustomShare\ContextMenuCustomShare.projitems" Label="Shared" />
 </Project>
