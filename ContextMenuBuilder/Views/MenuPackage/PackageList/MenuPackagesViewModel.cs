@@ -26,7 +26,7 @@ namespace ContextMenuBuilder.Views.MenuPackage.PackageList
 
         private readonly MenuPackageService _packageService = new();
         private readonly AppLang _lang = AppContext.AppLang;
-        private readonly ILogger _logger = AppLog.For<MenuPackagesViewModel>();
+        private readonly ILogger _logger = AppLog.GetLogger(nameof(MenuPackagesViewModel));
 
         public ObservableCollection<MenuPackageInfo> Packages { get; } = new();
 

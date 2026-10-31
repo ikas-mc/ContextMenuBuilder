@@ -1,4 +1,3 @@
-
 using ContextMenuBuilder.Modules.Lang;
 using ContextMenuCustomApp.Common;
 using Microsoft.UI.Xaml;

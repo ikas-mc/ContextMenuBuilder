@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Windows.ApplicationModel;
 using Windows.Management.Deployment;
 using Windows.Storage;
 
@@ -18,15 +17,30 @@ namespace ContextMenuBuilder.Service.MenuPackage
 {
     public sealed record MenuPackageBuildRequest
     {
-        public required string PackageId { get; init; }
+        public required string PackageId
+        {
+            get; init;
+        }
 
-        public required string Version { get; init; }
+        public required string Version
+        {
+            get; init;
+        }
 
-        public required string DisplayName { get; init; }
+        public required string DisplayName
+        {
+            get; init;
+        }
 
-        public bool AddToStartMenu { get; init; }
+        public bool AddToStartMenu
+        {
+            get; init;
+        }
 
-        public string? SourcePackageFullName { get; init; }
+        public string? SourcePackageFullName
+        {
+            get; init;
+        }
     }
 
     public sealed class MenuPackageEditorService
@@ -37,7 +51,7 @@ namespace ContextMenuBuilder.Service.MenuPackage
 
         private const string UapNamespaceUri = "http://schemas.microsoft.com/appx/manifest/uap/windows10";
 
-        private static readonly ILogger Log = AppLog.For<MenuPackageEditorService>();
+        private static readonly ILogger Log = AppLog.GetLogger(nameof(MenuPackageEditorService));
 
         private static AppLang Lang => AppContext.AppLang;
 
@@ -436,33 +450,44 @@ namespace ContextMenuBuilder.Service.MenuPackage
             return fallback;
         }
 
+        //TODO use CertificateService
         private static Task<string> ReadCertificatePublisherAsync(string certificatePath, string certificatePassword, CancellationToken cancellationToken)
         {
             return Task.Run(() =>
             {
+                X509Certificate2 certificate;
                 try
                 {
-                    using var certificate = new X509Certificate2(certificatePath, certificatePassword, X509KeyStorageFlags.EphemeralKeySet);
-                    var subject = certificate.Subject;
-                    if (string.IsNullOrWhiteSpace(subject))
-                    {
-                        throw new MenuPackageException(Lang.MenuPackageEditorStatusPublisherMissing);
-                    }
-
-                    Log.Info("Certificate read, path={Path}, subject={Subject}", certificatePath, subject);
-                    return subject;
-                }
-                catch (MenuPackageException e)
-                {
-                    Log.Error(e, "Certificate has no subject, path={Path}", certificatePath);
-                    throw;
+                    certificate = LoadCertificate(certificatePath, certificatePassword);
                 }
                 catch (Exception e)
                 {
                     Log.Error(e, "Certificate read failed, path={Path}", certificatePath);
                     throw new MenuPackageException(string.Format(Lang.MenuPackageServiceCertificateInvalid, certificatePath, e.Message), e);
                 }
+
+                using (certificate)
+                {
+                    var subject = certificate.Subject;
+                    if (string.IsNullOrWhiteSpace(subject))
+                    {
+                        Log.Error("Certificate has no subject, path={Path}", certificatePath);
+                        throw new MenuPackageException(Lang.MenuPackageEditorStatusPublisherMissing);
+                    }
+
+                    Log.Info("Certificate read, path={Path}, subject={Subject}", certificatePath, subject);
+                    return subject;
+                }
+
             }, cancellationToken);
+        }
+
+        //TODO CertificateService
+        private static X509Certificate2 LoadCertificate(string path, string? password)
+        {
+            //var type = X509Certificate2.GetCertContentType(path);
+            var flags = X509KeyStorageFlags.EphemeralKeySet;
+            return X509CertificateLoader.LoadPkcs12FromFile(path, password, flags);
         }
 
         private static Task CopyDirectoryAsync(string sourceFolder, string destinationFolder, CancellationToken cancellationToken)

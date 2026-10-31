@@ -12,57 +12,14 @@ namespace ContextMenuBuilder.Core.Log
     public static class AppLog
     {
         private const string LogFolderName = "logs";
-        private static readonly object SyncRoot = new();
         private static string? _logDirectory;
-        private static bool _initialized;
 
-        public static string LogDirectory
+        public static ILogger GetLogger(string name)
         {
-            get
-            {
-                EnsureInitialized();
-                return _logDirectory ?? string.Empty;
-            }
-        }
-
-        public static ILogger For<T>()
-        {
-            EnsureInitialized();
-            var name = typeof(T).FullName;
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return LogManager.GetLogger(typeof(T).Name);
-            }
-
             return LogManager.GetLogger(name);
         }
 
-        public static ILogger For(string name)
-        {
-            EnsureInitialized();
-            return LogManager.GetLogger(name);
-        }
-
-        private static void EnsureInitialized()
-        {
-            if (_initialized)
-            {
-                return;
-            }
-
-            lock (SyncRoot)
-            {
-                if (_initialized)
-                {
-                    return;
-                }
-
-                Initialize();
-                _initialized = true;
-            }
-        }
-
-        private static void Initialize()
+        public static void Initialize()
         {
             try
             {
@@ -70,7 +27,6 @@ namespace ContextMenuBuilder.Core.Log
                 Directory.CreateDirectory(directory);
                 _logDirectory = directory;
                 LogManager.Configuration = BuildConfiguration(directory);
-                LogManager.ReconfigExistingLoggers();
             }
             catch (Exception e)
             {
@@ -115,15 +71,7 @@ namespace ContextMenuBuilder.Core.Log
 
         private static string ResolveLogDirectory()
         {
-            try
-            {
-                return Path.Combine(ApplicationData.Current.LocalFolder.Path, LogFolderName);
-            }
-            catch (Exception)
-            {
-                var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                return Path.Combine(localAppData, "ContextMenuBuilder", LogFolderName);
-            }
+            return Path.Combine(ApplicationData.Current.LocalFolder.Path, LogFolderName);
         }
     }
 }

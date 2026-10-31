@@ -16,7 +16,7 @@ namespace ContextMenuBuilder
 
         private readonly TemplateService _service = new();
         private readonly AppLang _lang = AppContext.AppLang;
-        private readonly ILogger _logger = AppLog.For<TemplateViewModel>();
+        private readonly ILogger _logger = AppLog.GetLogger(nameof(TemplateViewModel));
 
         private string _importSourcePath = string.Empty;
 

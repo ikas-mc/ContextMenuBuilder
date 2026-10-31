@@ -26,7 +26,7 @@ namespace ContextMenuBuilder.Service.Win11ShellMenu
 
         private const string ManifestFileName = "AppxManifest.xml";
 
-        private static readonly ILogger Log = AppLog.For<Win11ShellMenuService>();
+        private static readonly ILogger Log = AppLog.GetLogger(nameof(Win11ShellMenuService));
 
         private static AppLang Lang => AppContext.AppLang;
 

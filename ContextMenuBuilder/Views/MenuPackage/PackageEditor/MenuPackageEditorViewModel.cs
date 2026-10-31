@@ -16,7 +16,7 @@ namespace ContextMenuBuilder.Views.MenuPackage.PackageEditor
 
         private readonly MenuPackageEditorService _editorService = new();
         private readonly AppLang _lang = AppContext.AppLang;
-        private readonly ILogger _logger = AppLog.For<MenuPackageEditorViewModel>();
+        private readonly ILogger _logger = AppLog.GetLogger(nameof(MenuPackageEditorViewModel));
 
         private string _generatedPackageId = string.Empty;
 

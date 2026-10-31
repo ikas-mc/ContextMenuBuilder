@@ -22,7 +22,7 @@ namespace ContextMenuBuilder.Service.Template
 
         private const int MaxBackupCount = 2;
 
-        private static readonly ILogger Log = AppLog.For<TemplateService>();
+        private static readonly ILogger Log = AppLog.GetLogger(nameof(TemplateService));
 
         private static AppLang Lang => AppContext.AppLang;
 

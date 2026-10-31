@@ -15,7 +15,7 @@ namespace ContextMenuBuilder
     {
         private readonly Win11ShellMenuService _service = new();
         private readonly AppLang _lang = AppContext.AppLang;
-        private readonly ILogger _logger = AppLog.For<Win11ShellMenuViewModel>();
+        private readonly ILogger _logger = AppLog.GetLogger(nameof(Win11ShellMenuViewModel));
 
         private IReadOnlyList<Win11ShellComItem> _allItems = Array.Empty<Win11ShellComItem>();
 

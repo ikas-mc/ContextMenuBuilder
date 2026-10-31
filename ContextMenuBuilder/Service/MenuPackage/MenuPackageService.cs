@@ -13,7 +13,7 @@ namespace ContextMenuBuilder.Service.MenuPackage
 {
     public sealed class MenuPackageService
     {
-        private static readonly ILogger Log = AppLog.For<MenuPackageService>();
+        private static readonly ILogger Log = AppLog.GetLogger(nameof(MenuPackageService));
 
         private static AppLang Lang => AppContext.AppLang;
 

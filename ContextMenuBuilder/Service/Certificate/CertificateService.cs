@@ -13,9 +13,15 @@ namespace ContextMenuBuilder.Service.Certificate
 {
     public sealed record CertificateGenerationResult
     {
-        public required string Output { get; init; }
+        public required string Output
+        {
+            get; init;
+        }
 
-        public required string Password { get; init; }
+        public required string Password
+        {
+            get; init;
+        }
     }
 
     public sealed class CertificateService
@@ -28,9 +34,9 @@ namespace ContextMenuBuilder.Service.Certificate
 
         private const string CliOutputFileName = "cert_tmp.pfx";
 
-        private static readonly ILogger Log = AppLog.For<CertificateService>();
+        private static readonly ILogger Log = AppLog.GetLogger(nameof(CertificateService));
 
-        private static readonly StoreName[] TrackedStores = new[] { StoreName.TrustedPeople, StoreName.TrustedPublisher };
+        private static readonly StoreName[] TrackedStores = [StoreName.TrustedPeople, StoreName.TrustedPublisher];
 
         private static AppLang Lang => AppContext.AppLang;
 
@@ -311,8 +317,9 @@ namespace ContextMenuBuilder.Service.Certificate
 
         private static X509Certificate2 Load(string path, string? password)
         {
-            var flags = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet;
-            return new X509Certificate2(path, password, flags);
+            //var type = X509Certificate2.GetCertContentType(path);
+            var flags = X509KeyStorageFlags.EphemeralKeySet;
+            return X509CertificateLoader.LoadPkcs12FromFile(path, password, flags);
         }
 
         private static bool IsInstalled(X509Certificate2 certificate)

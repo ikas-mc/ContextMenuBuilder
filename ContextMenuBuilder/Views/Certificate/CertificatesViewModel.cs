@@ -16,7 +16,7 @@ namespace ContextMenuBuilder
     {
         private readonly CertificateService _service = new();
         private readonly AppLang _lang = AppContext.AppLang;
-        private readonly ILogger _logger = AppLog.For<CertificatesViewModel>();
+        private readonly ILogger _logger = AppLog.GetLogger(nameof(CertificatesViewModel));
 
         private string _importSourcePath = string.Empty;
         private string _currentPassword = string.Empty;
